@@ -1,7 +1,9 @@
 from django.db import models
 import datetime
 import os
+from django.contrib.auth.models import User
 from django.apps import apps
+from django.contrib.auth.hashers import make_password
 from django.core.validators import RegexValidator
 # Create your models here.
 
@@ -97,12 +99,17 @@ class Product(models.Model):
 class User(models.Model):
     username = models.CharField(max_length=100, blank = False, null = False)
     password = models.CharField(max_length=30)
-    first_name = models.CharField(max_length=100, blank = False, null = False)
-    middle_name = models.CharField(max_length=100, blank = False, null = False)
-    last_name = models.CharField(max_length=100, blank = False, null = False)
+    #password = make_password(str(password))
+    firstname = models.CharField(max_length=100, blank = False, null = False)
+    middlename = models.CharField(max_length=100, blank = False, null = False)
+    lastname = models.CharField(max_length=100, blank = False, null = False)
     phone_regex = RegexValidator(regex=r'^\+?977?\d{10}$', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
-    phone_number = models.CharField(validators=[phone_regex], max_length=14, blank=True)
+    phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True)
     email =  models.EmailField()
+
+    
+
+
 
     def __str__(self):
         return self.username

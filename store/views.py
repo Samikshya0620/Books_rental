@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import *
+from .forms import CustomUserForm
 
 # Create your views here.
 def home(request):
@@ -12,6 +13,18 @@ def collections(request):
     return render(request,"store/collections.html", context)
 
 
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserForm(request.POST)
+        if form.is_valid():
+            user= form.save()
+            return redirect('register',user.pk)
+            # Do something here.
+    else:
+        form = CustomUserForm()
+    return render(request, 'store/add_user.html', {'form': form})
+
+"""
 def login(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -29,3 +42,5 @@ def login(request):
 
     #return HttpResponse("This is my contact page (/contact)")
     return render(request,"store/userslogin.html")
+
+"""
