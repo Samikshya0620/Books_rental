@@ -3,9 +3,9 @@ import { Search, ShoppingCartOutlined } from "@mui/icons-material";
 import React from "react";
 
 const Navbar = () => {
-  const style = "text-[14px], cursor-pointer, ml-[25px] mobile:ml-[5px]";
+  const style = "text-[14px] cursor-pointer ml-[25px] mobile:ml-[5px]";
   return (
-    <div className="navbar h-[60px] shadow-md relative z-10 ">
+    <div className="navbar h-[60px] shadow-md relative z-10">
       <div className="wrapper pl-[20px] pr-[20px] pt-[10px] pb-[10px] flex justify-between items-center mobile:pl-0 mobile:pr-0">
         <div className=" left flex flex-1  items-center">
           <div className="cursor-pointer text-[16px] mobile:hidden">En</div>
@@ -23,7 +23,7 @@ const Navbar = () => {
 
         {/* Logo */}
         <div className="center flex-1 text-center  mobile:ml-6">
-          <div className="logo font-bold mobile:text-sm">Winter Kings</div>
+          <div className="logo font-bold mobile:text-sm">Kitab Sansar</div>
         </div>
 
         {/* Right Side */}
