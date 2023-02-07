@@ -8,7 +8,7 @@ const Category = ({ item }) => {
         <h2 className="text-purple-700 font-medium text-[25px]">
           {item.title}
         </h2>
-        <buttton className="btn ml-3">See more</buttton>
+        <button className="btn ml-3">See more</button>
       </div>
     </div>
   );

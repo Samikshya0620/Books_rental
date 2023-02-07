@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@mui/icons-material";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Slider.css";
 import { ApiSlides } from "../Api/SliderApi";
 const Slider = () => {

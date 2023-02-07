@@ -13,15 +13,13 @@ const ProductPage = () => {
       <div className="flex justify-center mobile:flex-col mobile:mt-4 mobile:p-3">
         <div className="flex-1 flex items-center justify-center">
           <img
-            src="https://cdn.shopify.com/s/files/1/0240/7285/products/KNITPULLOVER-PISTACHIO-2_360x.jpg?v=1642545216"
-            className="product_img"
+            src={require("../assets/Bookimg/Alchemist.jpg")}
+            className="product_img w-4/6 h-4/6"
             alt="product_image"
           />
         </div>
         <div className="flex-[1.3] flex flex-col items-start  justify-items-center mt-10 mobile:items-center">
-          <h1 className="title text-[40px] mobile:text-[30px]">
-            Cream Hoody Orignal
-          </h1>
+          <h1 className="title text-[40px] mobile:text-[30px]">Alchemist</h1>
           <p className="disription pr-[4rem] text-justify mt-4 mobile:pr-0">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laudantium
             accusamus, culpa neque ex sunt placeat. Vitae quia qui quo,
