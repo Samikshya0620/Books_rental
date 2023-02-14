@@ -4,7 +4,7 @@ import {
 } from "@mui/icons-material";
 import React, { useState } from "react";
 
-const Product = ({ item, onChange }) => {
+const Product = ({ item, onChange, totalCountChange, totalCounter }) => {
   const [hoverEffects, setHoverEffects] = useState(" opacity-0");
   const [counter, setCounter] = useState(0);
   const handleClick = () => {
@@ -12,6 +12,8 @@ const Product = ({ item, onChange }) => {
     setCounter(newCounter);
     console.log(counter);
     onChange(newCounter);
+    totalCountChange(totalCounter + 1);
+    /* setCounter(0); */
   };
 
   const iconStyle =

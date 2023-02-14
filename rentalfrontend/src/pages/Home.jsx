@@ -12,13 +12,21 @@ const Home = () => {
   const handleCounterChange = (newCounter) => {
     setCounter(newCounter);
   };
+  const [totalCounter, setTotalCounter] = useState(counter);
+  const handleTotalCounterChange = (prevCounter) => {
+    setTotalCounter(prevCounter);
+  };
   return (
     <div>
       <Announce />
-      <Navbar counter={counter} />
+      <Navbar counter={totalCounter} />
       <Slider />
       <Categories />
-      <Products onCounterChange={handleCounterChange} />
+      <Products
+        onCounterChange={handleCounterChange}
+        totalCounter={totalCounter}
+        totalCountChange={handleTotalCounterChange}
+      />
       <NewsLetter />
       <Footer />
     </div>
