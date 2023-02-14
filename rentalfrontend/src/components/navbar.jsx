@@ -1,7 +1,7 @@
 import { Badge } from "@mui/material";
 import { Search, ShoppingCartOutlined } from "@mui/icons-material";
 import React from "react";
-import {NavLink,Link} from "react-router-dom"
+import { NavLink, Link } from "react-router-dom";
 const Navbar = () => {
   const style = "text-[14px] cursor-pointer ml-[25px] mobile:ml-[5px]";
   return (
@@ -28,8 +28,12 @@ const Navbar = () => {
 
         {/* Right Side */}
         <div className="right flex flex-1 items-center justify-end mobile:justify-center mobile:flex-[2]">
-          <NavLink className={style} to="/register">Register</NavLink>
-          <NavLink className={style} to="/login">Sign In</NavLink>
+          <NavLink className={style} to="/register">
+            Register
+          </NavLink>
+          <NavLink className={style} to="/login">
+            Sign In
+          </NavLink>
           <div className={style}>
             <Badge badgeContent={4} color="primary">
               <ShoppingCartOutlined />

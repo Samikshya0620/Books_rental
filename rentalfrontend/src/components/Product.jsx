@@ -6,6 +6,12 @@ import React, { useState } from "react";
 
 const Product = ({ item }) => {
   const [hoverEffects, setHoverEffects] = useState(" opacity-0");
+  const [counter, setCounter] = useState(0);
+  const handleClick = () => {
+    setCounter(counter + 1);
+    console.log(counter);
+    return counter;
+  };
 
   const iconStyle =
     "h-[40px] w-[40px] rounded-full bg-white flex items-center justify-center m-3 hover:bg-[#894af3] hover:text-white hover:scale-[1.1] ease-in duration-100 cursor-pointer";
@@ -35,7 +41,7 @@ const Product = ({ item }) => {
         }
       >
         <div className={iconStyle}>
-          <ShoppingCartOutlined />
+          <ShoppingCartOutlined onClick={handleClick} />
         </div>
         <div className={iconStyle}>
           <FavoriteBorderOutlined />
@@ -45,4 +51,4 @@ const Product = ({ item }) => {
   );
 };
 
-export default Product;
+export default  Product ;
