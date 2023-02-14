@@ -99,7 +99,7 @@ class Product(models.Model):
 class User(models.Model):
     username = models.CharField(max_length=100, blank = False, null = False)
     password = models.CharField(max_length=30)
-    #password = make_password(str(password))
+    #password = make_password(password)
     firstname = models.CharField(max_length=100, blank = False, null = False)
     middlename = models.CharField(max_length=100, blank = False, null = False)
     lastname = models.CharField(max_length=100, blank = False, null = False)

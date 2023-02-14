@@ -44,3 +44,14 @@ def login(request):
     return render(request,"store/userslogin.html")
 
 """
+
+def signup(request):
+    return render(request,"store/signup.html")
+    
+
+def signin(request):
+    return render(request,"store/signin.html")
+
+
+def signout(request):
+    pass
