@@ -4,13 +4,14 @@ import {
 } from "@mui/icons-material";
 import React, { useState } from "react";
 
-const Product = ({ item }) => {
+const Product = ({ item, onChange }) => {
   const [hoverEffects, setHoverEffects] = useState(" opacity-0");
   const [counter, setCounter] = useState(0);
   const handleClick = () => {
-    setCounter(counter + 1);
+    const newCounter = counter + 1;
+    setCounter(newCounter);
     console.log(counter);
-    return counter;
+    onChange(newCounter);
   };
 
   const iconStyle =
@@ -51,4 +52,4 @@ const Product = ({ item }) => {
   );
 };
 
-export default  Product ;
+export default Product;

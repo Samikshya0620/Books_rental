@@ -1,8 +1,9 @@
 import { Badge } from "@mui/material";
 import { Search, ShoppingCartOutlined } from "@mui/icons-material";
 import React from "react";
+import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
-const Navbar = () => {
+const Navbar = ({counter}) => {
   const style = "text-[14px] cursor-pointer ml-[25px] mobile:ml-[5px]";
   return (
     <div className="navbar h-[60px] shadow-md relative z-10">
@@ -35,7 +36,7 @@ const Navbar = () => {
             Sign In
           </NavLink>
           <div className={style}>
-            <Badge badgeContent={4} color="primary">
+            <Badge badgeContent={counter} color="primary">
               <ShoppingCartOutlined />
             </Badge>
           </div>
