@@ -8,11 +8,7 @@ import Products from "../components/Products";
 import Slider from "../components/Slider";
 import { useState } from "react";
 const Home = () => {
-  const [counter, setCounter] = useState(0);
-  const handleCounterChange = (newCounter) => {
-    setCounter(newCounter);
-  };
-  const [totalCounter, setTotalCounter] = useState(counter);
+  const [totalCounter, setTotalCounter] = useState(0);
   const handleTotalCounterChange = (prevCounter) => {
     setTotalCounter(prevCounter);
   };
@@ -23,7 +19,6 @@ const Home = () => {
       <Slider />
       <Categories />
       <Products
-        onCounterChange={handleCounterChange}
         totalCounter={totalCounter}
         totalCountChange={handleTotalCounterChange}
       />
