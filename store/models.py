@@ -104,7 +104,7 @@ class User(models.Model):
     middlename = models.CharField(max_length=100, blank = False, null = False)
     lastname = models.CharField(max_length=100, blank = False, null = False)
     phone_regex = RegexValidator(regex=r'^\+?977?\d{10}$', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
-    phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True)
+    phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True,null = True)
     email =  models.EmailField()
 
     

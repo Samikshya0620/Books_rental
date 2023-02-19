@@ -1,6 +1,15 @@
 from django.shortcuts import render,redirect
 from .models import *
+from .serializers import *
 from .forms import CustomUserForm
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from django.http import HttpResponse, JsonResponse
+import io
+from .serializers import *
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 
 # Create your views here.
 def home(request):
@@ -24,6 +33,33 @@ def register(request):
         form = CustomUserForm()
     return render(request, 'store/add_user.html', {'form': form})
 
+
+def user_detail(request):
+    usr = User.objects.all()
+    serializer = UserSerializer(usr,many = True)
+    json_data = JSONRenderer().render(serializer.data)
+    return HttpResponse(json_data,content_type ='application/json')
+    #return JsonResponse(serializer.data, safe = False)
+
+@csrf_exempt
+def user_create(request):
+    if request.method =='POST':
+        json_data = request.body
+        serializer = UserSerializer(data=json.loads(json_data))
+        #json_data = request.body
+        #json_data = request.body
+        #stream = io.BytesIO(json_data)
+        #python_data = JSONParser().parse(stream)
+        #serializer = UserSerializer(data =python_data)
+        if serializer.is_valid():
+            serializer.save()
+            res ={'msg':'Data Inserted Successfully.'}
+            json_data = JSONRenderer().render(res)
+            return HttpResponse(json_data,content_type ='application/json')
+
+        return HttpResponse(JSONRenderer().render(serializer.errors),content_type ='application/json')
+    
+        
 """
 def login(request):
     if request.method == "POST":
