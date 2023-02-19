@@ -12,7 +12,7 @@ const Product = ({ item, totalCountChange, totalCounter }) => {
     const newCounter = counter + 1;
     setCounter(newCounter);
     setQuantity(quantity+1);
-    console.log(quantity, item.id);
+    console.log(item.id,quantity);
     totalCountChange(totalCounter + 1);  /* setCounter(0); */
   };
 
