@@ -5,8 +5,13 @@ import NewsLetter from "../components/NewsLetter";
 import Counter from "../components/Counter";
 import Announce from "../components/announcement";
 import { productsContext } from "../context/productsContext";
+import { CartContext } from "../context/cartContext";
+
 const ProductPage = () => {
   const [products, setProducts] = useContext(productsContext);
+  const {addItem} = useContext(CartContext);
+  console.log(addItem);
+
   /* console.log(products[0]) */
   return (
     <div>
@@ -41,7 +46,10 @@ const ProductPage = () => {
                 </div>
               </div>
 
-              <button className="text-white bg-[#8a4af3] rounded-md shadow-md mt-[30px] p-3">
+              <button
+                onClick={()=>addItem(product)}
+                className="text-white bg-[#8a4af3] rounded-md shadow-md mt-[30px] p-3"
+              >
                 Add to Cart
               </button>
             </div>

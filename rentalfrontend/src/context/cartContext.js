@@ -30,6 +30,7 @@ export const CartContext = React.createContext({
 
 export const CartProvider = (props) => {
   const [items, setItems] = useState([]);
+  console.log(items);
   const [totalAmount, setTotalAmount] = useState(0);
   const calculateTotal = (items) => {
     const total = items.reduce((sum, item) => {
@@ -40,7 +41,7 @@ export const CartProvider = (props) => {
   const handleAddItem = (item) => {
     if (!items.includes(item)) {
       setItems((prevItems) => [...prevItems, { ...item, quantity: 1 }]);
-      /* console.log(item); */
+       /* console.log(item); */ 
     } else {
       setItems((prevItems) =>
         prevItems.map((prevItem) =>

@@ -1,11 +1,10 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import Footer from "../components/Footer";
 import Counter from "../components/Counter";
 import Announce from "../components/announcement";
 import { useContext } from "react";
-import { useEffect } from "react";
 import { CartContext } from "../context/cartContext";
 const Cart = () => {
   const SummaryItemStyle = "SummaryItem flex justify-between mt-3 w-[100%]";
@@ -14,8 +13,19 @@ const Cart = () => {
     "flex-auto flex flex-col justify-center items-center mobile:mt-7 mobile:mb-7";
   const ctcntx = useContext(CartContext);
   const total = ctcntx.totalAmount;
-  console.log(ctcntx.items);
+  const add = ctcntx.addItem;
 
+  useEffect(() => {
+    add({
+      id: 1,
+      title: "Alchemist",
+      src: require("../assets/Bookimg/Alchemist.jpg"),
+      price: 20,
+      quantity_available: 20,
+    });
+  }, []);
+  console.log(ctcntx.items);
+  console.log(ctcntx.totalAmount);
   return (
     <div>
       <Announce />
@@ -51,6 +61,7 @@ const Cart = () => {
                       src={item.src}
                       alt="product_img"
                     />
+                    {/* {console.log(item[0].src)} */}
 
                     <div className="disc flex items-start justify-start h-auto flex-col ml-6">
                       <p>
@@ -82,7 +93,7 @@ const Cart = () => {
             <h1 className="text-[2rem]">SUMMARY</h1>
             <div className={SummaryItemStyle}>
               <p>SubTotal:</p>
-              <p>{ctcntx.items.price}</p>
+              <p></p>
             </div>
             <div className={SummaryItemStyle}>
               <p>Shipping:</p>
@@ -94,7 +105,7 @@ const Cart = () => {
             </div>
             <div className={SummaryItemStyle + " text-3xl font-bold"}>
               <p>Total:</p>
-              <p>$140</p>
+              <p>{ctcntx.totalAmount}</p>
             </div>
           </div>
         </div>
