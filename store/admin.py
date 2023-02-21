@@ -9,4 +9,5 @@ admin.site.register(Book_Inventory)
 admin.site.register(Booking_item)
 admin.site.register(Payment_Detail)
 admin.site.register(booking_detail)
+admin.site.register(Cart)
 
