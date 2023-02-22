@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-class UserVieewset(viewsets.ModelViewSet):
+class UserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class =[UserSerializer]
     permission_classes = [IsAuthenticated]

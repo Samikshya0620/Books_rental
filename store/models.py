@@ -4,10 +4,11 @@ import os
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.apps import apps
 from django.contrib.auth.hashers import make_password
+
 from django.core.validators import RegexValidator
 # Create your models here.
 
-#booking_detail = apps.get_model('store', 'booking_detail')
+
 
 def get_file_path(request,filename):
     original_filename = filename
@@ -56,46 +57,6 @@ class Book_Inventory(models.Model):
         return str(self.book_id)
 
 
-
-"""
-class Category(models.Model):
-    slug  = models.CharField(max_length=150,null = False, blank = False)
-    name  = models.CharField(max_length=150,null = False, blank = False)
-    image = models.ImageField(upload_to = get_file_path,null= False, blank = False)
-    description = models.TextField(max_length=500, null= False,blank = False)
-    status = models.BooleanField(default = False , help_text = "0=Default, 1=Hidden")
-    trending = models.BooleanField(default = False , help_text = "0=Default, 1=Trending")
-    meta_title = models.CharField(max_length=100, null =False, blank =False)
-    meta_keywords = models.CharField(max_length=100, null =False, blank =False)
-    meta_description = models.CharField(max_length=500, null =False, blank =False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-    def __str__(self):
-        return self.name
-
-
-class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete =models.CASCADE)
-    slug= models.CharField(max_length=150,null = False, blank= False)
-    name = models.CharField(max_length=150, null =False, blank = False)
-    product_image = models.ImageField(upload_to = get_file_path,null= True, blank = True)
-    small_description = models.CharField(max_length=250,null=False,blank = False)
-    quantity = models.IntegerField(null = False, blank = False)
-    description = models.TextField(max_length=250,null=False,blank = False)
-    selling_price = models.FloatField(null = False, blank = False)
-    status = models.BooleanField(default = False , help_text = "0=Default, 1=Hidden")
-    trending = models.BooleanField(default = False , help_text = "0=Default, 1=Trending")
-    meta_title = models.CharField(max_length=100, null =False, blank =False)
-    meta_keywords = models.CharField(max_length=100, null =False, blank =False)
-    meta_description = models.CharField(max_length=500, null =False, blank =False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-    def __str__(self):
-        return self.name
-
-"""
 class User(models.Model):
     username = models.CharField(max_length=100, blank = False, null = False)
     password = models.CharField(max_length=30)
@@ -108,63 +69,13 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
-"""
+    
     
     def save(self, *args, **kwargs):
         self.password = make_password(self.password)
         super().save(*args, **kwargs)
-"""
-
-    
-"""
-class User(AbstractUser):
-    username = models.CharField(max_length=100, blank = False, null = False)
-    password = models.CharField(max_length=30)
-    firstname = models.CharField(max_length=100, blank = False, null = False)
-    middlename = models.CharField(max_length=100, blank = False, null = False)
-    lastname = models.CharField(max_length=100, blank = False, null = False)
-    phone_regex = RegexValidator(regex=r'^\+?977?\d{10}$', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
-    phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True,null = True)
-    email =  models.EmailField()
-
-
-    USERNAME_FIELD ='email'
-    REQUIRED_FIELDS =[]
-
-    def __str__(self):
-        return self.__class__.__name__
         
-
-class UserManager(BaseUserManager):
-    def create_user(self,email,name,tc,password= None,password2 = None):
-        if not email:
-            raise ValueError('User must have email')
-        user = self.model(
-            email = self.normalize_email(email),
-            name = name,
-            tc = tc
-        )
-        user.set_password(password)
-        user.save(using = self.db)
-        return user
-
-class User(AbstractBaseUser):
-    email = models.EmailField(
-        verbose_name ='email address',
-        max_length = 255,
-        uique = True,
-    )
-    name = models.CharField(max_length=200)
-    tc = models.BooleanField()
-    created_at = models.DateTimeField(auto_now_add =True)
-    updated_at = models.DateTimeField(auto_now =True)
-    USERNAME_FIELD ='email'
-    REQUIRED_FIELDS =['name','tc']
-
-    def __str__(self):
-        return self.email
-
-"""
+    
 
 class Cart(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
