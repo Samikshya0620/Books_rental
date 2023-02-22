@@ -5,9 +5,11 @@ export default class Register extends Component {
   inputStyle =
     "border-[2px] border-silver rounded-lg outline-[#8a4af3] p-2 focus:border-[#8a4af3] ease-linear duration-200 min-w-0";
 
-  buttonStyle = "mt-5 flex justify-center bg-[#8a4af3] text-white font-medium rounded-md p-2 ease-linear duration-200"
-  activeButtonStyle = ' hover:bg-white hover:text-[#8a4af3] hover:scale-[1.0.5] hover:border-[2px] hover:shadow-md hover:border-[#8a4af3] cursor-pointer'
-  disableButtonStyle = ' opacity-50'
+  buttonStyle =
+    "mt-5 flex justify-center bg-[#8a4af3] text-white font-medium rounded-md p-2 ease-linear duration-200";
+  activeButtonStyle =
+    " hover:bg-white hover:text-[#8a4af3] hover:scale-[1.0.5] hover:border-[2px] hover:shadow-md hover:border-[#8a4af3] cursor-pointer";
+  disableButtonStyle = " opacity-50";
   //states
   state = {
     first: "",
@@ -21,16 +23,12 @@ export default class Register extends Component {
   };
 
   checkPass = () => {
-     if(this.state.pass === this.state.confirm)
-     {
-         this.setState({...this.state, errors : {confirm : false}})
-     }
-     else
-     {
-       this.setState({...this.state, errors : {confirm : 'Not Same'}})
-       ;
-     }
- }
+    if (this.state.pass === this.state.confirm) {
+      this.setState({ ...this.state, errors: { confirm: false } });
+    } else {
+      this.setState({ ...this.state, errors: { confirm: "Not Same" } });
+    }
+  };
   handleChange = (evt) => {
     const fields = Object.assign({}, this.state);
     fields[evt.target.name] = evt.target.value;
@@ -43,30 +41,53 @@ export default class Register extends Component {
         <div className="flex flex-col absolute top-[20%] shadow-lg border-silver border-[2px] bg-white rounded-lg p-5 mobile:w-[90%]">
           <text className="text-2xl ">REGISTER</text>
 
-          {/* First Name Last Name */}
-          <div className="flex mt-7 w-auto">
+          {/* First Name */}
+          <input
+            className={this.inputStyle + `mt-7 mobile:w-[100%]`}
+            name="first"
+            type="text"
+            placeholder="First Name"
+            onChange={this.handleChange}
+            value={this.state.first}
+            required
+          />
+
+          {/* Middle name and Last name */}
+          <div className="flex mt-5">
             <input
-              className={this.inputStyle + ` mr-3`}
-              name="first"
+              className={this.inputStyle + `mobile:w-[100%] mr-2`}
+              name="middle"
               type="text"
-              placeholder="First Name"
+              placeholder="Middle Name"
               onChange={this.handleChange}
               value={this.state.first}
-              required
             />
+
             <input
-              className={this.inputStyle}
+              className={this.inputStyle + `mobile:w-[100%]`}
               name="last"
               type="text"
               placeholder="Last Name"
               onChange={this.handleChange}
-              value={this.state.last}
+              value={this.state.first}
+              required
             />
           </div>
+          {/* Username */}
+
+          <input
+            className={this.inputStyle + ` mt-5 mobile:w-[100%]`}
+            name="username"
+            type="text"
+            placeholder="Username"
+            onChange={this.handleChange}
+            value={this.state.email}
+            required
+          />
 
           {/* Email */}
           <input
-            className={this.inputStyle + ` mt-7 mobile:w-[100%]`}
+            className={this.inputStyle + ` mt-5 mobile:w-[100%]`}
             name="email"
             type="email"
             placeholder="Email"
@@ -76,7 +97,7 @@ export default class Register extends Component {
           />
 
           {/* Password */}
-          <div className="flex mt-7">
+          <div className="flex mt-5">
             <input
               className={this.inputStyle + ` mr-3`}
               name="pass"
@@ -106,7 +127,11 @@ export default class Register extends Component {
           {/* Submit button */}
           <input
             type="button"
-            className={(this.state.errors.confirm)? this.buttonStyle+this.disableButtonStyle: this.buttonStyle+this.activeButtonStyle}
+            className={
+              this.state.errors.confirm
+                ? this.buttonStyle + this.disableButtonStyle
+                : this.buttonStyle + this.activeButtonStyle
+            }
             value="Sign up"
           />
         </div>

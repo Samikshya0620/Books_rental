@@ -25,12 +25,12 @@ export default class Login extends Component {
 
           {/* First Name Last Name */}
           <div className="flex mt-7">
-            {/* Email */}
+            {/* Username */}
             <input
               className={this.inputStyle + ` mt-2 w-[100%]`}
-              name="email"
-              type="email"
-              placeholder="Email"
+              name="username"
+              type="text"
+              placeholder="Username"
               onChange={this.handleChange}
               value={this.state.email}
               required
