@@ -7,17 +7,17 @@ import Announce from "../components/announcement";
 import { productsContext } from "../context/productsContext";
 import { CartContext } from "../context/cartContext";
 
-const ProductPage = () => {
-  const [products, setProducts] = useContext(productsContext);
-  const {addItem} = useContext(CartContext);
-  console.log(addItem);
 
-  /* console.log(products[0]) */
+const ProductPage = () => {
+  const products = useContext(productsContext);
+  const { addItem } = useContext(CartContext);
+
+  console.log(products[0]);
   return (
     <div>
       <Announce />
       <Navbar />
-      <div className="flex justify-center mobile:flex-col sm:flex-col md:flex-col lg:flex-row mobile:mt-4 mobile:p-3">
+      <div className="flex justify-center mobile:flex-col sm:flex-col md:flex-row lg:flex-row mobile:mt-4 mobile:p-3">
         {products[0].map((product, index) => (
           <Fragment key={index}>
             <div className="flex-1 flex items-center justify-center">
@@ -47,7 +47,7 @@ const ProductPage = () => {
               </div>
 
               <button
-                onClick={()=>addItem(product)}
+                onClick={() => addItem(product)}
                 className="text-white bg-[#8a4af3] rounded-md shadow-md mt-[30px] p-3"
               >
                 Add to Cart

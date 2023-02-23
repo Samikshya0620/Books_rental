@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Category = ({ item }) => {
+  const navigate = useNavigate();
+  const value = item.categoryvalue;
   return (
     <div className="flex-1 m-2 shadow-lg rounded-md overflow-hidden relative mobile: flex-col">
       <img src={item.src} className="w-[100px] h-[100px]" alt="category_img" />
@@ -8,7 +11,9 @@ const Category = ({ item }) => {
         <h2 className="text-purple-700 font-medium text-[25px]">
           {item.title}
         </h2>
-        <button className="btn ml-3">See more</button>
+        <button className="btn ml-3" onClick={() => navigate("/category")}>
+          See more
+        </button>
       </div>
     </div>
   );
