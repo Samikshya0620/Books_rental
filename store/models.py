@@ -58,21 +58,38 @@ class Book_Inventory(models.Model):
 
 
 class User(models.Model):
-    username = models.CharField(max_length=100, blank = False, null = False)
-    password = models.CharField(max_length=30)
+    username = models.CharField(max_length=100, blank = False, null = False,unique= True)
+    password = models.CharField(max_length=512)
     firstname = models.CharField(max_length=100, blank = False, null = False)
     middlename = models.CharField(max_length=100, blank = False, null = False)
     lastname = models.CharField(max_length=100, blank = False, null = False)
     phone_regex = RegexValidator(regex=r'^\+?977?\d{10}$', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
     phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True,null = True)
-    email =  models.EmailField()
+    email =  models.EmailField(unique=True)
+    REQUIRED_FIELDS = ()
+    USERNAME_FIELD = 'username'
+
+    @property
+    def is_anonymous(self):
+        """
+        Always return False. This is a way of comparing User objects to
+        anonymous users.
+        """
+        return False
+    
+    @property
+    def is_authenticated(self):
+        return True
+    
 
     def __str__(self):
         return self.username
-    
+
+    def hash_password(self, password: str):
+        self.password = make_password(password=password)
     
     def save(self, *args, **kwargs):
-        self.password = make_password(self.password)
+        # self.password = make_password(self.password)
         super().save(*args, **kwargs)
         
     
