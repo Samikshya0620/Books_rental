@@ -7,7 +7,8 @@ from rest_framework_simplejwt.tokens import AccessToken,RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
-from passlib.hash import bcrypt
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsAuthenticatedAndTokenValid
 from .serializers import *
 import datetime
 #from rest_framework_simplejwt.views import TokenObtainPairView
@@ -238,6 +239,29 @@ class UserCreate(GenericAPIView,CreateModelMixin):
         return self.create(request, *args, **kwargs)
 
 
+class CartAPI(APIView):
+    permission_classes = [IsAuthenticatedAndTokenValid]
+    def get(self,request):
+        usr = Cart.objects.all()
+        serializer = CartSerializer(usr,many = True)
+        return Response(serializer.data)
+
+    def post(self,request):
+        data = request.data
+        serializer = CartSerializer(data = data)
+        if serializer.is_valid():
+            serializer.save()
+            res ={'msg':'Data has been created successfully'}
+            return Response(res)
+        return Response({'msg':serializer.errors})
+    
+    def delete(self,request):
+        usr = request.data
+        id = usr.get('id')
+        usr = Cart.objects.get(id=id)
+        usr.delete
+        res ={'msg':'Data has been deleted successfully'}
+        return Response(res)
 
 
 

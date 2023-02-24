@@ -52,6 +52,7 @@ class Book(models.Model):
 class Book_Inventory(models.Model):
     quantity = models.IntegerField(null = False, blank = False)
     book_id = models.ForeignKey(Book, on_delete=models.CASCADE)
+
   
     def __str__(self):
         return str(self.book_id)
@@ -61,7 +62,7 @@ class User(models.Model):
     username = models.CharField(max_length=100, blank = False, null = False,unique= True)
     password = models.CharField(max_length=512)
     firstname = models.CharField(max_length=100, blank = False, null = False)
-    middlename = models.CharField(max_length=100, blank = False, null = False)
+    middlename = models.CharField(max_length=100, blank = True, null = True)
     lastname = models.CharField(max_length=100, blank = False, null = False)
     phone_regex = RegexValidator(regex=r'^\+?977?\d{10}$', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
     phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True,null = True)
@@ -69,38 +70,30 @@ class User(models.Model):
     REQUIRED_FIELDS = ()
     USERNAME_FIELD = 'username'
 
-    @property
-    def is_anonymous(self):
-        """
-        Always return False. This is a way of comparing User objects to
-        anonymous users.
-        """
-        return False
-    
-    @property
-    def is_authenticated(self):
-        return True
-    
-
     def __str__(self):
         return self.username
-
+    """
     def hash_password(self, password: str):
         self.password = make_password(password=password)
-    
+    """
     def save(self, *args, **kwargs):
-        # self.password = make_password(self.password)
+        if not self.id:
+            self.password = make_password(self.password)
         super().save(*args, **kwargs)
-        
+        # self.password = make_password(self.password)
+        #super().save(*args, **kwargs)
+      
     
 
 class Cart(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    Book_id = models.ForeignKey(Book,on_delete= models.CASCADE)
+    book_id = models.ForeignKey(Book,on_delete= models.CASCADE)
     quantity = models.IntegerField()
     
     def __str__(self):
         return str(self.user_id)
+    
+
 
 class Booking_item(models.Model):
     quantity = models.IntegerField(null = False, blank = False)

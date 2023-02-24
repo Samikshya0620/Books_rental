@@ -29,6 +29,7 @@ urlpatterns = [
     #path('refreshtoken',TokenRefreshView().as_view(),name ='refreshtoken'),
     #path('verifytoken',TokenVerifyView.as_view(),name = 'verifytoken'),
     path('cusr',UserAPI.as_view(),name ='cusr'),
+    path('cart',CartAPI.as_view(),name ='cart'),
     path('gview',UserList.as_view(),name='gview'),
     path('retrieve/<int:pk>',UserRetrieve.as_view(),name ='retrieve'),
     path('ucreate',UserCreate.as_view(),name='ucreate'),
