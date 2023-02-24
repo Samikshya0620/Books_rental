@@ -1,13 +1,14 @@
 from django.db import models
 import datetime
 import os
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.apps import apps
 from django.contrib.auth.hashers import make_password
+
 from django.core.validators import RegexValidator
 # Create your models here.
 
-#booking_detail = apps.get_model('store', 'booking_detail')
+
 
 def get_file_path(request,filename):
     original_filename = filename
@@ -51,68 +52,48 @@ class Book(models.Model):
 class Book_Inventory(models.Model):
     quantity = models.IntegerField(null = False, blank = False)
     book_id = models.ForeignKey(Book, on_delete=models.CASCADE)
+
   
     def __str__(self):
         return str(self.book_id)
 
 
-
-"""
-class Category(models.Model):
-    slug  = models.CharField(max_length=150,null = False, blank = False)
-    name  = models.CharField(max_length=150,null = False, blank = False)
-    image = models.ImageField(upload_to = get_file_path,null= False, blank = False)
-    description = models.TextField(max_length=500, null= False,blank = False)
-    status = models.BooleanField(default = False , help_text = "0=Default, 1=Hidden")
-    trending = models.BooleanField(default = False , help_text = "0=Default, 1=Trending")
-    meta_title = models.CharField(max_length=100, null =False, blank =False)
-    meta_keywords = models.CharField(max_length=100, null =False, blank =False)
-    meta_description = models.CharField(max_length=500, null =False, blank =False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-    def __str__(self):
-        return self.name
-
-
-class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete =models.CASCADE)
-    slug= models.CharField(max_length=150,null = False, blank= False)
-    name = models.CharField(max_length=150, null =False, blank = False)
-    product_image = models.ImageField(upload_to = get_file_path,null= True, blank = True)
-    small_description = models.CharField(max_length=250,null=False,blank = False)
-    quantity = models.IntegerField(null = False, blank = False)
-    description = models.TextField(max_length=250,null=False,blank = False)
-    selling_price = models.FloatField(null = False, blank = False)
-    status = models.BooleanField(default = False , help_text = "0=Default, 1=Hidden")
-    trending = models.BooleanField(default = False , help_text = "0=Default, 1=Trending")
-    meta_title = models.CharField(max_length=100, null =False, blank =False)
-    meta_keywords = models.CharField(max_length=100, null =False, blank =False)
-    meta_description = models.CharField(max_length=500, null =False, blank =False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-    def __str__(self):
-        return self.name
-"""
-
 class User(models.Model):
-    username = models.CharField(max_length=100, blank = False, null = False)
-    password = models.CharField(max_length=30)
-    #password = make_password(password)
+    username = models.CharField(max_length=100, blank = False, null = False,unique= True)
+    password = models.CharField(max_length=512)
     firstname = models.CharField(max_length=100, blank = False, null = False)
-    middlename = models.CharField(max_length=100, blank = False, null = False)
+    middlename = models.CharField(max_length=100, blank = True, null = True)
     lastname = models.CharField(max_length=100, blank = False, null = False)
     phone_regex = RegexValidator(regex=r'^\+?977?\d{10}$', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
-    phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True)
-    email =  models.EmailField()
-
-    
-
-
+    phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True,null = True)
+    email =  models.EmailField(unique=True)
+    REQUIRED_FIELDS = ()
+    USERNAME_FIELD = 'username'
 
     def __str__(self):
         return self.username
+    """
+    def hash_password(self, password: str):
+        self.password = make_password(password=password)
+    """
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+        # self.password = make_password(self.password)
+        #super().save(*args, **kwargs)
+      
+    
+
+class Cart(models.Model):
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    book_id = models.ForeignKey(Book,on_delete= models.CASCADE)
+    quantity = models.IntegerField()
+    
+    def __str__(self):
+        return str(self.user_id)
+    
+
 
 class Booking_item(models.Model):
     quantity = models.IntegerField(null = False, blank = False)
