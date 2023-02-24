@@ -1,62 +1,102 @@
-import React, { Component } from "react";
+import React, {useContext} from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AuthContext } from '../context/authContext';
 
-export default class Login extends Component {
-  //style
-  inputStyle =
-    "border-[2px] border-silver rounded-lg outline-[#8a4af3] p-2 focus:border-[#8a4af3] ease-linear duration-200 ";
 
-  //states
-  state = {
-    email: "",
-    pass: "",
-  };
+function Copyright(props) {
+  return (
+    <Typography variant="body2" color="text.primary" align="center" {...props}>
+      {'Copyright © BookRental'}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 
-  handleChange = (evt) => {
-    const fields = Object.assign({}, this.state);
-    fields[evt.target.name] = evt.target.value;
-    this.setState({ ...fields });
-  };
+const theme = createTheme();
 
-  render() {
-    return (
-      <div className="flex justify-center w-[100%] h-[100vh] bg-[#b892f7]">
-        <div className="flex flex-col absolute top-[30%] bg-white shadow-lg border-silver border-[2px] rounded-lg p-5 w-[40%] mobile:w-[90%]">
-          <text className="text-2xl ">Log in</text>
+export default function LoginPage() {
+  const data = useContext(AuthContext);
 
-          {/* First Name Last Name */}
-          <div className="flex mt-7">
-            {/* Email */}
-            <input
-              className={this.inputStyle + ` mt-2 w-[100%]`}
-              name="email"
-              type="email"
-              placeholder="Email"
-              onChange={this.handleChange}
-              value={this.state.email}
+  return (
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box component="form" onSubmit={data.loginUser} sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
               required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              autoFocus
             />
-          </div>
-          {/* Password */}
-          <div className="flex mt-7">
-            <input
-              className={this.inputStyle + ` w-[100%]`}
-              name="pass"
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
               type="password"
-              placeholder="Password"
-              onChange={this.handleChange}
-              value={this.state.pass}
-              required
+              id="password"
+              autoComplete="current-password"
             />
-          </div>
-          {/* Submit button */}
-          <input
-            type="button"
-            className="mt-5 flex justify-center bg-[#8a4af3] text-white font-medium rounded-md p-2 hover:bg-white hover:text-[#8a4af3] hover:scale-[1.0.5] hover:border-[2px] hover:shadow-md hover:border-[#8a4af3] ease-linear duration-200"
-            value="Log in"
-            disabled
-          />
-        </div>
-      </div>
-    );
-  }
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="/register" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
+      </Container>
+    </ThemeProvider>
+  );
 }

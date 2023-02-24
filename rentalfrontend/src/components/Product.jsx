@@ -2,18 +2,14 @@ import {
   FavoriteBorderOutlined,
   ShoppingCartOutlined,
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { CartContext } from "../context/cartContext";
 
-const Product = ({ item, totalCountChange, totalCounter }) => {
+const Product = ({ item }) => {
+  const { addItem } = useContext(CartContext);
   const [hoverEffects, setHoverEffects] = useState(" opacity-0");
-  const [counter, setCounter] = useState(0);
-  const [quantity,setQuantity] = useState(0);
   const handleClick = () => {
-    const newCounter = counter + 1;
-    setCounter(newCounter);
-    setQuantity(quantity+1);
-    console.log(item.id,quantity);
-    totalCountChange(totalCounter + 1);  /* setCounter(0); */
+    addItem(item);
   };
 
   const iconStyle =

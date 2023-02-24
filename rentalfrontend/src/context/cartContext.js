@@ -1,48 +1,36 @@
 import React from "react";
 import { useState } from "react";
 
-export const CartContext = React.createContext({
-  items: [{
-    id: 1,
-    title: "Alchemist",
-    src: require("../assets/Bookimg/Alchemist.jpg"),
-    price: 20,
-    quantity_available: 20,
-  },
-  {
-    id: 2,
-    title: "Spy",
-    src: require("../assets/Bookimg/spy.jpg"),
-    price: 10,
-    quantity_available: 50,
-  },
-  {
-    id: 3,
-    title: "Subconscious",
-    src: require("../assets/Bookimg/Subconscious.jpg"),
-    price: 100,
-    quantity_available: 35,
-  },],
-  totalAmount: 0,
-  addItem: (item) => {},
-  removeItem: (id) => {},
-});
+export const CartContext = React.createContext({});
 
 export const CartProvider = (props) => {
   const [items, setItems] = useState([]);
-  console.log(items);
+  const [totalCounter, setTotalCounter] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+
   const calculateTotal = (items) => {
     const total = items.reduce((sum, item) => {
       return sum + item.price * item.quantity;
     }, 0);
     return total;
   };
+
   const handleAddItem = (item) => {
-    if (!items.includes(item)) {
+    setTotalCounter(totalCounter + 1);
+    const includesItemWithQuantity = items.some((obj) => {
+      return (
+        Object.keys(obj).every((key) => {
+          return obj[key] === item[key];
+        }) && obj.hasOwnProperty("quantity")
+      );
+    });
+
+    if (!includesItemWithQuantity) {
       setItems((prevItems) => [...prevItems, { ...item, quantity: 1 }]);
-       /* console.log(item); */ 
+      /* console.log(item); */
+      console.log("We are in if");
     } else {
+      console.log("We are in else");
       setItems((prevItems) =>
         prevItems.map((prevItem) =>
           prevItem.id === item.id
@@ -54,7 +42,9 @@ export const CartProvider = (props) => {
     const total = calculateTotal(items);
     setTotalAmount(total);
   };
+
   const handleRemoveItem = (id) => {
+    setTotalCounter(totalCounter - 1);
     setItems((prevItems) =>
       prevItems.map((prevItem) =>
         prevItem.id === id
@@ -65,9 +55,11 @@ export const CartProvider = (props) => {
     const total = calculateTotal(items);
     setTotalAmount(total);
   };
+
   const cartCtx = {
     items: items,
     totalAmount: totalAmount,
+    totalCounter: totalCounter,
     addItem: handleAddItem,
     removeItem: handleRemoveItem,
   };

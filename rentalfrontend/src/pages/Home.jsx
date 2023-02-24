@@ -6,22 +6,14 @@ import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import Products from "../components/Products";
 import Slider from "../components/Slider";
-import { useState } from "react";
 const Home = () => {
-  const [totalCounter, setTotalCounter] = useState(0);
-  const handleTotalCounterChange = (prevCounter) => {
-    setTotalCounter(prevCounter);
-  };
   return (
     <div>
       <Announce />
-      <Navbar counter={totalCounter} />
+      <Navbar />
       <Slider />
       <Categories />
-      <Products
-        totalCounter={totalCounter}
-        totalCountChange={handleTotalCounterChange}
-      />
+      <Products />
       <NewsLetter />
       <Footer />
     </div>

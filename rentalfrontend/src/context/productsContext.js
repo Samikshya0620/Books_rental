@@ -1,14 +1,12 @@
-import React, { createContext, useState } from "react";
+import React, { createContext } from "react";
 import { ApiTopPropduct } from "../Api/TopProductsApi";
 export const productsContext = createContext();
 export const ProductProvider = ({ children }) => {
   /*  console.log(ApiTopPropduct); */
-  const [products, setProducts] = useState([
-    ApiTopPropduct.map((product) => product),
-  ]);
+  const products = ApiTopPropduct.map((product) => product);
   /*  console.log(products); */
   return (
-    <productsContext.Provider value={[products, setProducts]}>
+    <productsContext.Provider value={products}>
       {children}
     </productsContext.Provider>
   );

@@ -5,6 +5,7 @@ export const ApiTopPropduct = [
     src: require("../assets/Bookimg/Alchemist.jpg"),
     price: 20,
     quantity_available: 20,
+    category:"selfhelp",
   },
   {
     id: 2,
@@ -12,6 +13,7 @@ export const ApiTopPropduct = [
     src: require("../assets/Bookimg/spy.jpg"),
     price: 10,
     quantity_available: 50,
+    category:"romance",
   },
   {
     id: 3,
@@ -19,5 +21,6 @@ export const ApiTopPropduct = [
     src: require("../assets/Bookimg/Subconscious.jpg"),
     price: 100,
     quantity_available: 35,
+    category:"thriller",
   },
 ];
