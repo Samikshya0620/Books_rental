@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment} from "react";
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import Footer from "../components/Footer";
@@ -13,20 +13,14 @@ const Cart = () => {
     "flex-auto flex flex-col justify-center items-center mobile:mt-7 mobile:mb-7";
   const ctcntx = useContext(CartContext);
   /*  console.log(ctcntx.items); */
+  /*   const [total,setTotal] = useState(ctcntx.totalAmount); */
   const total = ctcntx.totalAmount;
   const add = ctcntx.addItem;
 
-  /*   useEffect(() => {
-    add({
-      id: 1,
-      title: "Alchemist",
-      src: require("../assets/Bookimg/Alchemist.jpg"),
-      price: 20,
-      quantity_available: 20,
-    });
-  }, []);
-  console.log(ctcntx.items);
-  console.log(ctcntx.totalAmount); */
+  /*     useEffect(() => {
+      setTotal(ctcntx.totalAmount);
+      
+  }, []); */
   return (
     <div>
       <Announce />
