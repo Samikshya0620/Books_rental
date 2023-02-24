@@ -1,17 +1,14 @@
 import React from "react";
-import { ApiTopPropduct } from "../Api/TopProductsApi";
+import { useContext } from "react";
+import { productsContext } from "../context/productsContext";
 import Product from "./Product";
-const Products = ({ onCounterChange, totalCounter, totalCountChange }) => {
+
+const Products = () => {
+  const products = useContext(productsContext);
   return (
     <div className="p-5 flex flex-wrap">
-      {ApiTopPropduct.map((product, index) => (
-        <Product
-          item={product}
-          key={index}
-          onChange={onCounterChange}
-          totalCounter={totalCounter}
-          totalCountChange={totalCountChange}
-        />
+      {products.map((product, index) => (
+        <Product item={product} key={index} />
       ))}
     </div>
   );
