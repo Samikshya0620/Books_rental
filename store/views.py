@@ -83,8 +83,8 @@ def login_view(request):
        print(type(dbpass))
        if ((userv.username == user) and check_password(passw,userv.password)): 
             
-            #access_token_exp = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-            #refresh_token_exp = datetime.datetime.utcnow() + datetime.timedelta(days=7)
+            #access_token_exp = datetime.datetime.now() + datetime.timedelta(minutes=60)
+            #refresh_token_exp = datetime.datetime.now() + datetime.timedelta(days=7)
 
             payload = {
                 
