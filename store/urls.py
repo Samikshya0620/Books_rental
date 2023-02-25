@@ -35,7 +35,7 @@ urlpatterns = [
     path('ucreate',UserCreate.as_view(),name='ucreate'),
     path('bookapi',views.bookapi,name ='bookapi'),
     path('ctgapi',views.categoryapi,name ='ctgapi'),
-    path('auth',views.protected_view,name ='auth' ),
+    #path('auth',views.protected_view,name ='auth' ),
 
 
 ]

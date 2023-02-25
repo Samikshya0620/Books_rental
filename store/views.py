@@ -21,10 +21,11 @@ import io
 from rest_framework.generics import GenericAPIView
 from .serializers import *
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.exceptions import AuthenticationFailed
 import json
 from rest_framework.views import APIView
 from rest_framework.mixins import ListModelMixin,RetrieveModelMixin,CreateModelMixin
+from .tokens import *
+
 # Create your views here.
 def home(request):
     return render(request,"store/index.html")
@@ -47,7 +48,11 @@ def register(request):
         form = CustomUserForm()
     return render(request, 'store/add_user.html', {'form': form})
 
-
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        
+        return obj.strftime('%Y-%m-%d %H:%M:%S')
+        return json.JSONEncoder.default(self, obj)
 
 def login_view(request):
    if request.method == "POST":
@@ -66,81 +71,53 @@ def login_view(request):
     #    try:
        print("Hello")
         
-       usr = User.objects.filter(username = user)  
+       #usr = User.objects.filter(username = user)  
        
        userv = User.objects.filter(username = user).first()
 
-       serializer = UserSerializer(usr,many = True)
-       json_data = JSONRenderer().render(serializer.data)
+       #serializer = UserSerializer(usr,many = True)
+       #json_data = JSONRenderer().render(serializer.data)
         #print(type(json_data))
-       print(json_data)
-       u_dict = json.loads(json_data.decode('utf-8'))
-       a = u_dict[0]
-       dbuser=a.get("username")
-       dbpass = a.get("password")
+       #print(json_data)
+       #u_dict = json.loads(json_data.decode('utf-8'))
+       #a = u_dict[0]
+       #dbuser=a.get("username")
+       #dbpass = a.get("password")
        #did = a.get("id")
-       print(dbuser,dbpass)
-       print(type(dbpass))
-       if ((userv.username == user) and check_password(passw,userv.password)): 
+       #print(dbuser,dbpass)
+       #print(type(dbpass))
+       if ((userv.username == user) and check_password(passw,userv.password)):
+
+            access_token ,refresh_token =generate_tokens(userv) 
+            response = JsonResponse({'access_token': access_token, 'refresh_token': refresh_token}, status=status.HTTP_200_OK)
+            return response
             
-            #access_token_exp = datetime.datetime.now() + datetime.timedelta(minutes=60)
-            #refresh_token_exp = datetime.datetime.now() + datetime.timedelta(days=7)
+            """
+            access_token_exp = datetime.datetime.now() + datetime.timedelta(minutes=1)
+            refresh_token_exp = datetime.datetime.now() + datetime.timedelta(days=7)
 
             payload = {
                 
                 'user_id': userv.id,
                 'username': userv.username,
-                #'access_token_exp': access_token_exp,
-                #'refresh_token_exp': refresh_token_exp,
+                'access_token_exp': access_token_exp,
+                'refresh_token_exp': refresh_token_exp,
             }
-            access_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
-            refresh_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+            access_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256',json_encoder=CustomJSONEncoder)
+            refresh_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256',json_encoder=CustomJSONEncoder)
 
             # Return tokens to the client
             response = JsonResponse({'access_token': access_token, 'refresh_token': refresh_token}, status=status.HTTP_200_OK)
             return response
+        """
        else:
             return JsonResponse({'message': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
    else:
         return JsonResponse({'message': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
 
-        """
-            access_token = generate_access_token(user)
-            user_data = UserSerializer(user).data
-            user_data['access_token'] = access_token
-            return Response(user_data)    
-            #return JsonResponse({'token': 'Success'})
-            
-          else:
-            return JsonResponse({'error':'Invalid username or password'})
-   """
     #    except:
     #         return JsonResponse({'error':'Invalid request method'})
-
-@api_view(['GET'])
-def protected_view(request):
-    authorization_header = request.headers.get('Authorization')
-
-    if not authorization_header:
-        return Response({'message': 'Authorization header is missing'}, status=status.HTTP_401_UNAUTHORIZED)
-
-    access_token = authorization_header.split(' ')[1]
-
-    try:
-        payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=['HS256'])
-        user_id = payload['user_id']
-        
-        #user = User.objects.filter(username=user)
-        return Response({'message': f'Authorized view!'}, status=status.HTTP_200_OK)
-    except jwt.ExpiredSignatureError:
-        return Response({'message': 'Access token has expired'}, status=status.HTTP_401_UNAUTHORIZED)
-    except jwt.InvalidTokenError:
-        return Response({'message': 'Invalid access token'}, status=status.HTTP_401_UNAUTHORIZED)
-    except ObjectDoesNotExist:
-        return Response({'message': 'User not found'}, status=status.HTTP_401_UNAUTHORIZED)
-    
-
-
+   
 @api_view(['GET','POST'])
 def userapi(request):
     if(request.method == 'GET'):
@@ -241,8 +218,15 @@ class UserCreate(GenericAPIView,CreateModelMixin):
 
 class CartAPI(APIView):
     permission_classes = [IsAuthenticatedAndTokenValid]
+
     def get(self,request):
-        usr = Cart.objects.all()
+        auth_header = request.headers.get('Authorization', '')
+        token = auth_header.split(' ')[1]
+        
+        
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        user_id= payload.get('user_id')
+        usr = Cart.objects.filter(user_id = user_id)
         serializer = CartSerializer(usr,many = True)
         return Response(serializer.data)
 
