@@ -1,4 +1,4 @@
-import React, { Fragment} from "react";
+import React, { Fragment, useState,useEffect} from "react";
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import Footer from "../components/Footer";
@@ -13,14 +13,13 @@ const Cart = () => {
     "flex-auto flex flex-col justify-center items-center mobile:mt-7 mobile:mb-7";
   const ctcntx = useContext(CartContext);
   /*  console.log(ctcntx.items); */
-  /*   const [total,setTotal] = useState(ctcntx.totalAmount); */
-  const total = ctcntx.totalAmount;
+  const [total,setTotal] = useState(ctcntx.totalAmount); 
   const add = ctcntx.addItem;
 
-  /*     useEffect(() => {
+/*        useEffect(() => {
       setTotal(ctcntx.totalAmount);
       
-  }, []); */
+  }, []);  */
   return (
     <div>
       <Announce />

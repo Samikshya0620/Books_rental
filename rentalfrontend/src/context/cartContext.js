@@ -39,6 +39,7 @@ export const CartProvider = (props) => {
         )
       );
     }
+    console.log(items);
     const total = calculateTotal(items);
     setTotalAmount(total);
   };

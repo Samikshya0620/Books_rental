@@ -12,13 +12,13 @@ const ProductPage = () => {
   const products = useContext(productsContext);
   const { addItem } = useContext(CartContext);
 
-  console.log(products[0]);
+/*   console.log(products[0]); */
   return (
     <div>
       <Announce />
       <Navbar />
       <div className="flex justify-center mobile:flex-col sm:flex-col md:flex-row lg:flex-row mobile:mt-4 mobile:p-3">
-        {products[0].map((product, index) => (
+        {products.map((product, index) => (
           <Fragment key={index}>
             <div className="flex-1 flex items-center justify-center">
               <img

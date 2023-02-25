@@ -11,7 +11,6 @@ const Product = ({ item }) => {
   const handleClick = () => {
     addItem(item);
   };
-
   const iconStyle =
     "h-[40px] w-[40px] rounded-full bg-white flex items-center justify-center m-3 hover:bg-[#894af3] hover:text-white hover:scale-[1.1] ease-in duration-100 cursor-pointer";
 
