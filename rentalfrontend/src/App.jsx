@@ -29,7 +29,7 @@ function App() {
               <Route path="register" element={<Registers />} />
               <Route path="product" element={<ProductPage />} />
               <Route path="login" element={<Login />} />
-              <Route path="cart" element={<PrivateRoute component={Cart} />} />
+              <Route path="cart" element={<Cart />} />
               <Route path="category" element={<CategoryPage />} />
               <Route path="*" element={<Navigate to={"/"} replace />} />
             </Route>

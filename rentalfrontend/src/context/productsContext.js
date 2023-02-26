@@ -11,7 +11,6 @@ export const ProductProvider = ({ children }) => {
   const [productapi, setProductapi] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categoryapi, setCategoryapi] = useState([]);
-  
 
   async function getCategories() {
     try {
@@ -58,8 +57,6 @@ export const ProductProvider = ({ children }) => {
     products: products,
     categories: categories,
   };
-  console.log(products);
-  console.log(categories);
   return (
     <productsContext.Provider value={productcontext}>
       {children}

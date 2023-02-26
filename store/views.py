@@ -163,9 +163,16 @@ def userapi(request):
 @api_view(['GET','POST'])
 def bookapi(request):
     if(request.method == 'GET'):
-        usr = Book.objects.all()
-        serializer = BookSerializer(usr,many = True)
-        return Response(serializer.data)
+        books = Book.objects.all()
+        serialized_data = []
+        for book in books:
+            image_path = book.image.path
+            with default_storage.open(image_path, 'rb') as f:
+                image_data = f.read()
+            book_data = BookSerializer(book).data
+            book_data['image'] = base64.b64encode(image_data).decode('utf-8')
+            serialized_data.append(book_data)
+        return Response(serialized_data)
     
     if(request.method =='POST'):
         data = request.data
@@ -182,14 +189,14 @@ def categoryapi(request):
     if(request.method == 'GET'):
         categories = Category.objects.all()
         serialized_data = []
-    for category in categories:
-        image_path = category.image.path
-        with default_storage.open(image_path, 'rb') as f:
-            image_data = f.read()
-        category_data = CategorySerializer(category).data
-        category_data['image'] = base64.b64encode(image_data).decode('utf-8')
-        serialized_data.append(category_data)
-    return Response(serialized_data)
+        for category in categories:
+            image_path = category.image.path
+            with default_storage.open(image_path, 'rb') as f:
+                image_data = f.read()
+            category_data = CategorySerializer(category).data
+            category_data['image'] = base64.b64encode(image_data).decode('utf-8')
+            serialized_data.append(category_data)
+        return Response(serialized_data)
     #serializer = CategorySerializer(usr,many = True)
     if(request.method =='POST'):
         data = request.data

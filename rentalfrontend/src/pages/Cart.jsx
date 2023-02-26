@@ -1,4 +1,4 @@
-import React, { Fragment, useState,useEffect} from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import Footer from "../components/Footer";
@@ -11,15 +11,18 @@ const Cart = () => {
   const ProductDivStyle = "flex w-[100%] h-auto items-center mobile:flex-col";
   const PriceQuantityStyle =
     "flex-auto flex flex-col justify-center items-center mobile:mt-7 mobile:mb-7";
-  const ctcntx = useContext(CartContext);
-  /*  console.log(ctcntx.items); */
-  const [total,setTotal] = useState(ctcntx.totalAmount); 
-  const add = ctcntx.addItem;
-
-/*        useEffect(() => {
-      setTotal(ctcntx.totalAmount);
-      
-  }, []);  */
+  const { items, totalAmount, addItem } = useContext(CartContext);
+  const [total, setTotal] = useState(totalAmount);
+  const add = addItem;
+  const [imageUrls, setImageUrls] = useState([]);
+  useEffect(() => {
+    const urls = items.map((item) => {
+      const image = new Image();
+      image.src = `data:image/jpeg;base64,${item.image}`;
+      return image.src;
+    });
+    setImageUrls(urls);
+  }, [items]);
   return (
     <div>
       <Announce />
@@ -33,7 +36,7 @@ const Cart = () => {
             Rent More
           </button>
           <div className="flex underline text-lg hover:cursor-pointer mobile:m-5">
-            <p>Items in your Cart: {ctcntx.items.length}</p>
+            <p>Items in your Cart: {items.length}</p>
             <p className="ml-5">Whishlist Items: 0</p>
           </div>
           <button className="btn mt-0 rounded px-1 py-1 bg-gradient-to-r from-cyan-500 to to-blue-500">
@@ -46,13 +49,13 @@ const Cart = () => {
           {/* product div */}
           <div className="flex flex-col flex-1">
             {/* 1st product div */}
-            {ctcntx.items.map((item, index) => (
+            {items.map((item, index) => (
               <Fragment key={index}>
                 <div className={ProductDivStyle}>
                   <div className=" product flex pl-5 self-start">
                     <img
                       className="product_img w-[7rem]"
-                      src={item.src}
+                      src={imageUrls[index]}
                       alt="product_img"
                     />
                     {/* {console.log(item[0].src)} */}
@@ -91,15 +94,15 @@ const Cart = () => {
             </div>
             <div className={SummaryItemStyle}>
               <p>Shipping:</p>
-              <p>$10</p>
+              <p>100</p>
             </div>
             <div className={SummaryItemStyle}>
               <p>Shipping Discount:</p>
-              <p>-$10</p>
+              <p>-100</p>
             </div>
             <div className={SummaryItemStyle + " text-3xl font-bold"}>
               <p>Total:</p>
-              <p>{ctcntx.totalAmount}</p>
+              <p>{totalAmount}</p>
             </div>
           </div>
         </div>

@@ -27,8 +27,6 @@ export const CartProvider = (props) => {
 
     if (!includesItemWithQuantity) {
       setItems((prevItems) => [...prevItems, { ...item, quantity: 1 }]);
-      /* console.log(item); */
-      console.log("We are in if");
     } else {
       console.log("We are in else");
       setItems((prevItems) =>
@@ -62,7 +60,7 @@ export const CartProvider = (props) => {
   useEffect(() => {
     const total = calculateTotal(items);
     setTotalAmount(total);
-   /*  console.log(items); */
+    /*  console.log(items); */
   }, [items]);
 
   return (

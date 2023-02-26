@@ -5,7 +5,7 @@ import { productsContext } from "../context/productsContext";
 
 import Category from "./Category";
 const Categories = () => {
-  const {categories} = useContext(productsContext);
+  const { categories } = useContext(productsContext);
   return (
     <div className="flex justify-between items-center p-5 mobile:flex-col">
       {categories.map((category, index) => (

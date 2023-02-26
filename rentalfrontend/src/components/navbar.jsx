@@ -15,8 +15,8 @@ const Navbar = () => {
   };
 
   return (
-    <ToastContainer>
       <div className="navbar h-[60px] shadow-md relative z-10">
+        <ToastContainer/>
         <div className="wrapper pl-[20px] pr-[20px] pt-[10px] pb-[10px] flex justify-between items-center mobile:pl-0 mobile:pr-0">
           <div className=" left flex flex-1  items-center">
             {/* <div className="cursor-pointer text-[16px] mobile:hidden">En</div> */}
@@ -59,7 +59,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </ToastContainer>
   );
 };
 
