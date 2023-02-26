@@ -161,9 +161,8 @@ def categoryapi(request):
         category_data = CategorySerializer(category).data
         category_data['image'] = base64.b64encode(image_data).decode('utf-8')
         serialized_data.append(category_data)
-        #serializer = CategorySerializer(usr,many = True)
     return Response(serialized_data)
-    
+    #serializer = CategorySerializer(usr,many = True)
     if(request.method =='POST'):
         data = request.data
         serializer = CategorySerializer(data = data)
