@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect
 from django.core.exceptions import ObjectDoesNotExist
 import jwt
+import base64
+from django.core.files.storage import default_storage
 from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import AccessToken,RefreshToken
@@ -150,9 +152,17 @@ def bookapi(request):
 @api_view(['GET','POST'])
 def categoryapi(request):
     if(request.method == 'GET'):
-        usr = Category.objects.all()
-        serializer = CategorySerializer(usr,many = True)
-        return Response(serializer.data)
+        categories = Category.objects.all()
+        serialized_data = []
+    for category in categories:
+        image_path = category.image.path
+        with default_storage.open(image_path, 'rb') as f:
+            image_data = f.read()
+        category_data = CategorySerializer(category).data
+        category_data['image'] = base64.b64encode(image_data).decode('utf-8')
+        serialized_data.append(category_data)
+        #serializer = CategorySerializer(usr,many = True)
+    return Response(serialized_data)
     
     if(request.method =='POST'):
         data = request.data

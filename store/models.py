@@ -41,10 +41,6 @@ class Book(models.Model):
     rating = models.FloatField(null = True, blank = True)
     created_at = models.DateTimeField(auto_now=True)
     
-
-
-
-
     def __str__(self):
         return self.name
     
@@ -53,7 +49,6 @@ class Book_Inventory(models.Model):
     quantity = models.IntegerField(null = False, blank = False)
     book_id = models.ForeignKey(Book, on_delete=models.CASCADE)
 
-  
     def __str__(self):
         return str(self.book_id)
 
@@ -96,10 +91,8 @@ class Cart(models.Model):
 
 
 class Booking_item(models.Model):
-    quantity = models.IntegerField(null = False, blank = False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
-    book_id = models.ForeignKey(Book, on_delete=models.CASCADE)
+    cart_id = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    
 
     def __str__(self):
         return self.__class__.__name__
