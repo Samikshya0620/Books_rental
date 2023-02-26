@@ -28,7 +28,7 @@ const Product = ({ item }) => {
       onMouseLeave={handleHoverExit}
     >
       <img
-        src={item.src}
+        src={item.image}
         alt="product"
         className="w-[200px] h-[200px] overflow-hidden"
       />
@@ -45,6 +45,7 @@ const Product = ({ item }) => {
           <FavoriteBorderOutlined />
         </div>
       </div>
+      <p>{item.name}</p>
     </div>
   );
 };

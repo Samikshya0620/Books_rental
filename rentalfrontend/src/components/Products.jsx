@@ -4,7 +4,7 @@ import { productsContext } from "../context/productsContext";
 import Product from "./Product";
 
 const Products = () => {
-  const products = useContext(productsContext);
+  const {products} = useContext(productsContext);
   return (
     <div className="p-5 flex flex-wrap">
       {products.map((product, index) => (

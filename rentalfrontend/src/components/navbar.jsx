@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { CartContext } from "../context/cartContext";
+import { ToastContainer } from "react-toastify";
 const Navbar = () => {
   const navigate = useNavigate();
   const { totalCounter: counter } = useContext(CartContext);
@@ -14,46 +15,51 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar h-[60px] shadow-md relative z-10">
-      <div className="wrapper pl-[20px] pr-[20px] pt-[10px] pb-[10px] flex justify-between items-center mobile:pl-0 mobile:pr-0">
-        <div className=" left flex flex-1  items-center">
-          {/* <div className="cursor-pointer text-[16px] mobile:hidden">En</div> */}
+    <ToastContainer>
+      <div className="navbar h-[60px] shadow-md relative z-10">
+        <div className="wrapper pl-[20px] pr-[20px] pt-[10px] pb-[10px] flex justify-between items-center mobile:pl-0 mobile:pr-0">
+          <div className=" left flex flex-1  items-center">
+            {/* <div className="cursor-pointer text-[16px] mobile:hidden">En</div> */}
 
-          {/* Search Input */}
-          <div className="SearchContainer flex border-[2px] border-solid border-lightgrey rounded-md items-center ml-[10px] p-[5px]">
-            <input
-              type="text"
-              className="border-none mobile:w-[50px]"
-              placeholder="Search"
-            />
-            <Search className="text-[#8a4af3] m" style={{ fontSize: "16px" }} />
+            {/* Search Input */}
+            <div className="SearchContainer flex border-[2px] border-solid border-lightgrey rounded-md items-center ml-[10px] p-[5px]">
+              <input
+                type="text"
+                className="border-none mobile:w-[50px]"
+                placeholder="Search"
+              />
+              <Search
+                className="text-[#8a4af3] m"
+                style={{ fontSize: "16px" }}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Logo */}
-        <div className="center flex-1 text-center  mobile:ml-6">
-          <div className="logo font-bold mobile:text-sm">Kitab Sansar</div>
-        </div>
+          {/* Logo */}
+          <div className="center flex-1 text-center  mobile:ml-6">
+            <div className="logo font-bold mobile:text-sm">Kitab Sansar</div>
+          </div>
 
-        {/* Right Side */}
-        <div className="right flex flex-1 items-center justify-end mobile:justify-center mobile:flex-[2]">
-          <NavLink className={style} to="/home">
-            Home
-          </NavLink>
-          <NavLink className={style} to="/register">
-            Register
-          </NavLink>
-          <NavLink className={style} to="/login">
-            Sign In
-          </NavLink>
-          <div className={style}>
-            <Badge badgeContent={counter} color="primary">
-              <ShoppingCartOutlined onClick={handleClick} />
-            </Badge>
+          {/* Right Side */}
+          <div className="right flex flex-1 items-center justify-end mobile:justify-center mobile:flex-[2]">
+            <NavLink className={style} to="/home">
+              Home
+            </NavLink>
+            <NavLink className={style} to="/register">
+              Register
+            </NavLink>
+            <NavLink className={style} to="/login">
+              Sign In
+            </NavLink>
+            <div className={style}>
+              <Badge badgeContent={counter} color="primary">
+                <ShoppingCartOutlined onClick={handleClick} />
+              </Badge>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </ToastContainer>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
 export const CartContext = React.createContext({});
@@ -39,9 +39,6 @@ export const CartProvider = (props) => {
         )
       );
     }
-    console.log(items);
-    const total = calculateTotal(items);
-    setTotalAmount(total);
   };
 
   const handleRemoveItem = (id) => {
@@ -53,8 +50,6 @@ export const CartProvider = (props) => {
           : prevItem
       )
     );
-    const total = calculateTotal(items);
-    setTotalAmount(total);
   };
 
   const cartCtx = {
@@ -64,6 +59,11 @@ export const CartProvider = (props) => {
     addItem: handleAddItem,
     removeItem: handleRemoveItem,
   };
+  useEffect(() => {
+    const total = calculateTotal(items);
+    setTotalAmount(total);
+   /*  console.log(items); */
+  }, [items]);
 
   return (
     <CartContext.Provider value={cartCtx}>

@@ -23,19 +23,17 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <ProductProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<PrivateRoute Component={Home} />} />
-                <Route path="register" element={<Registers />} />
-                <Route path="product" element={<ProductPage />} />
-                <Route path="login" element={<Login />} />
-                <Route path="cart" element={<Cart />} />
-                <Route path="category" element={<CategoryPage />} />
-                <Route path="*" element={<Navigate to={"/"} replace />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="register" element={<Registers />} />
+              <Route path="product" element={<ProductPage />} />
+              <Route path="login" element={<Login />} />
+              <Route path="cart" element={<PrivateRoute component={Cart} />} />
+              <Route path="category" element={<CategoryPage />} />
+              <Route path="*" element={<Navigate to={"/"} replace />} />
+            </Route>
+          </Routes>
         </ProductProvider>
       </CartProvider>
     </AuthProvider>

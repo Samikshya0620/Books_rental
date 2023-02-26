@@ -25,6 +25,8 @@ from rest_framework.exceptions import AuthenticationFailed
 import json
 from rest_framework.views import APIView
 from rest_framework.mixins import ListModelMixin,RetrieveModelMixin,CreateModelMixin
+import base64
+from django.core.files.storage import default_storage
 # Create your views here.
 def home(request):
     return render(request,"store/index.html")
@@ -178,10 +180,17 @@ def bookapi(request):
 @api_view(['GET','POST'])
 def categoryapi(request):
     if(request.method == 'GET'):
-        usr = Category.objects.all()
-        serializer = CategorySerializer(usr,many = True)
-        return Response(serializer.data)
-    
+        categories = Category.objects.all()
+        serialized_data = []
+    for category in categories:
+        image_path = category.image.path
+        with default_storage.open(image_path, 'rb') as f:
+            image_data = f.read()
+        category_data = CategorySerializer(category).data
+        category_data['image'] = base64.b64encode(image_data).decode('utf-8')
+        serialized_data.append(category_data)
+    return Response(serialized_data)
+    #serializer = CategorySerializer(usr,many = True)
     if(request.method =='POST'):
         data = request.data
         serializer = CategorySerializer(data = data)
