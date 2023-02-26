@@ -56,7 +56,7 @@ const Slider = () => {
                 <div className="discription flex flex-col flex-1 place-items-start justify-center ml-11">
                   <h2 className="text-[55px]">{slide.content.h2}</h2>
                   <p className=" text-[30px]">{slide.content.p}</p>
-                  <button className="btn">Shop Now</button>
+                  <button className="btn">Rent Now</button>
                 </div>
               </div>
             </div>

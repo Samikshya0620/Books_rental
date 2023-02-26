@@ -32,7 +32,7 @@ const Navbar = () => {
 
         {/* Logo */}
         <div className="center flex-1 text-center  mobile:ml-6">
-          <div className="logo font-bold mobile:text-sm">Kitab Sansar</div>
+          <div className="logo text-3xl font-serif text mobile:text-sm">B-BOOK</div>
         </div>
 
         {/* Right Side */}

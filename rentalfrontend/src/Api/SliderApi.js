@@ -2,8 +2,8 @@ export const ApiSlides = [
   {
     src: "https://th.bing.com/th/id/R.d61d40826f5ad98f3afe762e94634b54?rik=o4aom%2fT7mJfMPA&pid=ImgRaw&r=0",
     content: {
-      h2: "Amazing Deals this Summer",
-      p: "Upto 10% off",
+      h2: "Rent It, No Need To Buy It!!!",
+      p: "Reasonable , Economical and Efficient",
     },
     background: " bg-[#c6e400]",
   },
@@ -12,7 +12,7 @@ export const ApiSlides = [
     active: true,
     content: {
       h2: "Lets dig into our subconsious mind",
-      p: "Upto 10% off",
+      p: "Resonable, Economical and Efficient",
     },
     background: " bg-[#ffd028]",
   },
