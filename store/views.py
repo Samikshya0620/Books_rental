@@ -64,13 +64,8 @@ def login_view(request):
        user = data.get('username')
        passw= data.get('password')
        #pss = print(make_password(passw))
-       print("username:",user)
-       print("password:",passw)
        
-       print(type(passw))
     #    try:
-       print("Hello")
-        
        #usr = User.objects.filter(username = user)  
        
        userv = User.objects.filter(username = user).first()

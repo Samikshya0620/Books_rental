@@ -26,12 +26,7 @@ def generate_tokens(userv):
     'username': userv.username,
     'refresh_token_exp': refresh_token_exp,
 }
-    # payload = {
-    #     'user_id': user.id,
-    #     'username': user.username,
-    #     'access_token_exp': access_token_exp,
-    #     'refresh_token_exp': refresh_token_exp,
-    # }
+
     access_token = jwt.encode(access_payload, settings.SECRET_KEY, algorithm='HS256',json_encoder=CustomJSONEncoder)
     refresh_token = jwt.encode(refresh_payload, settings.SECRET_KEY, algorithm='HS256',json_encoder=CustomJSONEncoder)
     
