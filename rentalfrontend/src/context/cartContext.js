@@ -63,6 +63,12 @@ export const CartProvider = (props) => {
     /*  console.log(items); */
   }, [items]);
 
+  useEffect(() => {
+    const total = calculateTotal(items);
+    setTotalAmount(total);
+    console.log(items);
+  }, [items]);
+
   return (
     <CartContext.Provider value={cartCtx}>
       {props.children}

@@ -1,3 +1,9 @@
+import { useEffect, useState } from "react";
+import http from "../services/httpService";
+import config from "../config.json"
+
+const apiEndpoint = config.apiUrl + "ctgapi"
+
 export const ApiCategories = [
   {
     title: "Self Help",
@@ -15,3 +21,17 @@ export const ApiCategories = [
     categoryvalue:"thriller",
   },
 ];
+export const Categories = () => {
+  const [loading, setloading] = useState(true);
+  const getCategories = async () =>{
+   const categories =  await http.get(apiEndpoint);
+   console.log(categories);
+   if(loading){
+    setloading(false)
+   }
+  }
+  useEffect(()=> {
+    getCategories()
+
+  },[loading])
+}
