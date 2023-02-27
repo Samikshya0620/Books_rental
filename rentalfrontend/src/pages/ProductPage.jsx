@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
@@ -7,12 +7,20 @@ import Announce from "../components/announcement";
 import { productsContext } from "../context/productsContext";
 import { CartContext } from "../context/cartContext";
 
-
 const ProductPage = () => {
-  const products = useContext(productsContext);
+  const { products } = useContext(productsContext);
   const { addItem } = useContext(CartContext);
+  const [imageUrls, setImageUrls] = useState([]);
 
-/*   console.log(products[0]); */
+  useEffect(() => {
+    const urls = products.map((item) => {
+      const image = new Image();
+      image.src = `data:image/jpeg;base64,${item.image}`;
+      return image.src;
+    });
+    setImageUrls(urls);
+  }, [products]);
+
   return (
     <div>
       <Announce />
@@ -22,27 +30,23 @@ const ProductPage = () => {
           <Fragment key={index}>
             <div className="flex-1 flex items-center justify-center">
               <img
-                src={product.src}
+                src={imageUrls[index]}
                 className="product_img w-4/6 h-4/6"
                 alt="product_image"
               />
             </div>
             <div className="flex-[1.3] flex flex-col items-start  justify-items-center mt-10 mobile:items-center">
               <h1 className="title text-[40px] mobile:text-[30px]">
-                {product.title}
+                {product.name}
               </h1>
               <p className="disription pr-[4rem] text-justify mt-4 mobile:pr-0">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Laudantium accusamus, culpa neque ex sunt placeat. Vitae quia
-                qui quo, doloribus dolore aliquam veniam. Natus totam odit
-                consequatur consectetur delectus nihil!
+                {product.description}
               </p>
               <div className="flex flex-col place-self-start">
                 <p className="mt-7 text-3xl">
                   Price: <b>{product.price}</b>
                 </p>
                 <div className="mt-7">
-                  <Counter />
                 </div>
               </div>
 

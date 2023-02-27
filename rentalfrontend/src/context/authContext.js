@@ -4,6 +4,10 @@ import config from "../config.json";
 import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 const apiEndpoint = config.apiUrl + "signin";
 
@@ -40,12 +44,11 @@ export const AuthProvider = ({ children }) => {
         firstname: firstname,
         lastname: lastname,
       });
-      if (response.status === 200) {
-        toast.success("User Created successfully");
-        navigate("/login");
-      }
+      toast.success("User Created successfully");
+      await sleep(2000);
+      navigate("/login");
     } catch (error) {
-      console.log(error);
+      toast.error(error.response.data.error);
     }
   };
 
@@ -54,17 +57,21 @@ export const AuthProvider = ({ children }) => {
     const data = new FormData(e.currentTarget);
     let username = data.get("username");
     let password = data.get("password");
-    let response = await http.post(apiEndpoint, { username, password });
-    const jwt = await response.data;
-    /* console.log(jwt); */
-    if (response.status === 200) {
+    try {
+      let response = await http.post(apiEndpoint, { username, password });
+      const jwt = await response.data;
       setAuthTokens(jwt);
       setUser(jwtDecode(jwt.access_token));
       localStorage.setItem("authTokens", JSON.stringify(jwt));
+      toast.success("User Logged in successfully");
+      await sleep(2000);
       navigate("/");
-    } else {
-      toast.error("Something went wrong!");
+      
+    } catch (error) {
+      toast.error("Username and password do not match");
+      
     }
+    /* console.log(jwt); */
   };
   let logoutUser = () => {
     setAuthTokens(null);

@@ -27,10 +27,8 @@ const theme = createTheme();
 
 export default function SignUp() {
   const data = useContext(AuthContext);
-  console.log(data);
   return (
     <ThemeProvider theme={theme}>
-      <ToastContainer></ToastContainer>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -100,6 +98,7 @@ export default function SignUp() {
                   id="password"
                   autoComplete="new-password"
                 />
+                 <ToastContainer></ToastContainer>
               </Grid>
             </Grid>
             <Button

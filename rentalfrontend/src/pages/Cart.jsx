@@ -6,22 +6,58 @@ import Counter from "../components/Counter";
 import Announce from "../components/announcement";
 import { useContext } from "react";
 import { CartContext } from "../context/cartContext";
+import { AuthContext } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
+import http from "../services/httpService";
+import config from "../config.json";
+
 const Cart = () => {
   const SummaryItemStyle = "SummaryItem flex justify-between mt-3 w-[100%]";
   const ProductDivStyle = "flex w-[100%] h-auto items-center mobile:flex-col";
   const PriceQuantityStyle =
     "flex-auto flex flex-col justify-center items-center mobile:mt-7 mobile:mb-7";
-  const { items, totalAmount, addItem } = useContext(CartContext);
-  const [total, setTotal] = useState(totalAmount);
-  const add = addItem;
+
+  const { authTokens } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const {
+    totalAmount,
+    addItem,
+    setTotalCounter,
+    totalCounter,
+    setItems,
+    items,
+    setTotalAmount,
+    calculateTotal
+  } = useContext(CartContext);
   const [imageUrls, setImageUrls] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const getitems = async () => {
+      const response = await http.get(config.apiUrl + "cart", {
+        headers: {
+          Authorization: "Bearer " + authTokens.access_token,
+        },
+      });
+      console.log(await response.data["books"]);
+      setItems(await response.data["books"]);
+    };
+    getitems();
+  }, [authTokens.access_token]);
+
   useEffect(() => {
     const urls = items.map((item) => {
       const image = new Image();
-      image.src = `data:image/jpeg;base64,${item.image}`;
+      image.src = `data:image/jpeg;base64,${item.image_data}`;
       return image.src;
     });
+
     setImageUrls(urls);
+    const total = calculateTotal(items);
+    setTotalAmount(total);
+    setTotalCounter(items.length);
   }, [items]);
   return (
     <div>
@@ -32,14 +68,20 @@ const Cart = () => {
 
         {/* upper buttons div */}
         <div className="flex items-center justify-between mt-4 mobile:flex-col">
-          <button className="btn mt-0 rounded px-1 py-1 bg-gradient-to-r from-cyan-500 to to-blue-500">
+          <button
+            onClick={() => navigate("/")}
+            className="btn mt-0 rounded px-1 py-1 bg-gradient-to-r from-cyan-500 to to-blue-500"
+          >
             Rent More
           </button>
           <div className="flex underline text-lg hover:cursor-pointer mobile:m-5">
-            <p>Items in your Cart: {items.length}</p>
+            <p>Items in your Cart:{items.length} </p>
             <p className="ml-5">Whishlist Items: 0</p>
           </div>
-          <button className="btn mt-0 rounded px-1 py-1 bg-gradient-to-r from-cyan-500 to to-blue-500">
+          <button
+            onClick={() => navigate("/checkout")}
+            className="btn mt-0 rounded px-1 py-1 bg-gradient-to-r from-cyan-500 to to-blue-500"
+          >
             Checkout Now
           </button>
         </div>
@@ -74,9 +116,9 @@ const Cart = () => {
 
                   {/*Price and Quantity Div*/}
                   <div className={PriceQuantityStyle}>
-                    <Counter />
+                    <Counter item={item} />
                     <p className="flex items-center justify-center text-4xl mt-3">
-                      <b>{item.price}</b>
+                      <b>{item.price * item.quantity}</b>
                     </p>
                   </div>
                 </div>

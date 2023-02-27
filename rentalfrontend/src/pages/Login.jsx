@@ -32,8 +32,6 @@ export default function LoginPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <ToastContainer>
-      </ToastContainer>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -71,6 +69,7 @@ export default function LoginPage() {
               id="password"
               autoComplete="current-password"
             />
+            <ToastContainer></ToastContainer>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
