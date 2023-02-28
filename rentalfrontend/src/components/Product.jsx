@@ -6,6 +6,8 @@ import React, { useContext, useState } from "react";
 import { CartContext } from "../context/cartContext";
 
 const Product = ({ item }) => {
+  const image = new Image();
+  image.src = `data:image/jpeg;base64,${item.image}`;
   const { addItem } = useContext(CartContext);
   const [hoverEffects, setHoverEffects] = useState(" opacity-0");
   const handleClick = () => {
@@ -28,7 +30,7 @@ const Product = ({ item }) => {
       onMouseLeave={handleHoverExit}
     >
       <img
-        src={item.src}
+        src={image.src}
         alt="product"
         className="w-[200px] h-[200px] overflow-hidden"
       />
@@ -45,6 +47,7 @@ const Product = ({ item }) => {
           <FavoriteBorderOutlined />
         </div>
       </div>
+      <p>{item.name}</p>
     </div>
   );
 };

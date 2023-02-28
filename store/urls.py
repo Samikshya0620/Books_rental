@@ -36,6 +36,7 @@ urlpatterns = [
     path('bookapi',views.bookapi,name ='bookapi'),
     path('ctgapi',views.categoryapi,name ='ctgapi'),
     #path('auth',views.protected_view,name ='auth' ),
+    path('cartpost',CAPI.as_view(),name ='cartpost'),
 
 
 ]

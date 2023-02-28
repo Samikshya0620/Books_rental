@@ -1,9 +1,22 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "./authContext";
+import http from "../services/httpService";
+import config from "../config.json";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export const CartContext = React.createContext({});
 
 export const CartProvider = (props) => {
+  const navigate = useNavigate();
+  const { authTokens, user } = useContext(AuthContext);
+
   const [items, setItems] = useState([]);
   const [totalCounter, setTotalCounter] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -15,56 +28,74 @@ export const CartProvider = (props) => {
     return total;
   };
 
-  const handleAddItem = (item) => {
-    setTotalCounter(totalCounter + 1);
-    const includesItemWithQuantity = items.some((obj) => {
-      return (
-        Object.keys(obj).every((key) => {
-          return obj[key] === item[key];
-        }) && obj.hasOwnProperty("quantity")
-      );
+  const getitems = async () => {
+    if (!authTokens) {
+      return null;
+    }
+    const response = await http.get(config.apiUrl + "cart", {
+      headers: {
+        Authorization: "Bearer " + authTokens.access_token,
+      },
     });
+    setItems(await response.data["books"]);
+    setTotalCounter(items.length);
+  };
 
-    if (!includesItemWithQuantity) {
-      setItems((prevItems) => [...prevItems, { ...item, quantity: 1 }]);
-      /* console.log(item); */
-      console.log("We are in if");
-    } else {
-      console.log("We are in else");
-      setItems((prevItems) =>
-        prevItems.map((prevItem) =>
-          prevItem.id === item.id
-            ? { ...prevItem, quantity: prevItem.quantity + 1 }
-            : prevItem
-        )
+  const handleAddItem = async (item) => {
+    if (!authTokens) {
+      toast.error("You must login first ");
+      await sleep(2000);
+      navigate("/login");
+    }
+    try {
+      const response = await http.post(
+        config.apiUrl + "cartpost",
+        { book_id: item.id, quantity: 1, user_id: user.user_id },
+        {
+          headers: {
+            Authorization: "Bearer " + authTokens.access_token,
+          },
+        }
       );
+      setTotalCounter(totalCounter + 1);
+      getitems();
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const handleRemoveItem = (id) => {
-    setTotalCounter(totalCounter - 1);
-    setItems((prevItems) =>
-      prevItems.map((prevItem) =>
-        prevItem.id === id
-          ? { ...prevItem, quantity: prevItem.quantity - 1 }
-          : prevItem
-      )
-    );
+  const handleRemoveItem = async (item) => {
+    if (!authTokens) {
+      toast.error("You must login first ");
+      await sleep(2000);
+      navigate("/login");
+    }
+    try {
+      const response = await http.delete(config.apiUrl + "cart", {
+        headers: {
+          Authorization: "Bearer " + authTokens.access_token,
+        },
+        data: { book_id: item.id, quantity: 1, user_id: user.user_id },
+      });
+      setTotalCounter(totalCounter - 1);
+      getitems();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const cartCtx = {
     items: items,
     totalAmount: totalAmount,
     totalCounter: totalCounter,
+    setItems: setItems,
+    setTotalAmount: setTotalAmount,
+    setTotalCounter: setTotalCounter,
     addItem: handleAddItem,
     removeItem: handleRemoveItem,
+    getItems: getitems,
+    calculateTotal: calculateTotal,
   };
-
-  useEffect(() => {
-    const total = calculateTotal(items);
-    setTotalAmount(total);
-    console.log(items);
-  }, [items]);
 
   return (
     <CartContext.Provider value={cartCtx}>

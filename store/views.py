@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.core.exceptions import ObjectDoesNotExist
 import jwt
+from rest_framework.exceptions import NotFound
 import base64
 from django.core.files.storage import default_storage
 from django.conf import settings
@@ -11,6 +12,7 @@ from rest_framework import status
 from .models import *
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAuthenticatedAndTokenValid
+from rest_framework import serializers
 from .serializers import *
 import datetime
 #from rest_framework_simplejwt.views import TokenObtainPairView
@@ -18,6 +20,7 @@ from .forms import CustomUserForm
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
+from django.core.serializers import serialize
 from django.contrib.auth.hashers import check_password
 import io
 from rest_framework.generics import GenericAPIView
@@ -135,9 +138,16 @@ def userapi(request):
 @api_view(['GET','POST'])
 def bookapi(request):
     if(request.method == 'GET'):
-        usr = Book.objects.all()
-        serializer = BookSerializer(usr,many = True)
-        return Response(serializer.data)
+        books = Book.objects.filter(status = True)
+        serialized_data = []
+        for book in books:
+            image_path = book.image.path
+            with default_storage.open(image_path, 'rb') as f:
+                image_data = f.read()
+            book_data = BookSerializer(book).data
+            book_data['image'] = base64.b64encode(image_data).decode('utf-8')
+            serialized_data.append(book_data)
+        return Response(serialized_data)
     
     if(request.method =='POST'):
         data = request.data
@@ -152,17 +162,18 @@ def bookapi(request):
 @api_view(['GET','POST'])
 def categoryapi(request):
     if(request.method == 'GET'):
-        categories = Category.objects.all()
+        categories = Category.objects.filter(status = True)
         serialized_data = []
-    for category in categories:
-        image_path = category.image.path
-        with default_storage.open(image_path, 'rb') as f:
-            image_data = f.read()
-        category_data = CategorySerializer(category).data
-        category_data['image'] = base64.b64encode(image_data).decode('utf-8')
-        serialized_data.append(category_data)
-    return Response(serialized_data)
+        for category in categories:
+            image_path = category.image.path
+            with default_storage.open(image_path, 'rb') as f:
+                image_data = f.read()
+            category_data = CategorySerializer(category).data
+            category_data['image'] = base64.b64encode(image_data).decode('utf-8')
+            serialized_data.append(category_data)
+        return Response(serialized_data)
     #serializer = CategorySerializer(usr,many = True)
+
     if(request.method =='POST'):
         data = request.data
         serializer = CategorySerializer(data = data)
@@ -181,7 +192,16 @@ class UserAPI(APIView):
 
     def post(self,request):
         data = request.data
+        usrname = data.get('username')
+        eml = data.get('email')
+        if User.objects.filter(username=usrname).exists():
+            error_msg = {'error': 'User with this username already exists.'}
+            if User.objects.filter(email=eml).exists():
+                error_msg = {'error': 'User with this email or username already exists.'}
+                return JsonResponse(error_msg, status=400)
+            return JsonResponse(error_msg, status=400)            
         serializer = UserSerializer(data = data)
+               
         if serializer.is_valid():
             serializer.save()
             res ={'msg':'Data has been created successfully'}
@@ -222,35 +242,77 @@ class UserCreate(GenericAPIView,CreateModelMixin):
 
 class CartAPI(APIView):
     permission_classes = [IsAuthenticatedAndTokenValid]
-
-    def get(self,request):
-        auth_header = request.headers.get('Authorization', '')
-        token = auth_header.split(' ')[1]
+    def get(self, request):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return Response({'error': 'Not Authorized'}, status=status.HTTP_401_UNAUTHORIZED)
+        try:      
+            token = auth_header.split(' ')[1]
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        except (jwt.DecodeError, IndexError):
+            return Response({'error': 'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+        user_id = payload.get('user_id')
+        usr = Cart.objects.filter(user_id=user_id)
         
-        
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        user_id= payload.get('user_id')
-        usr = Cart.objects.filter(user_id = user_id)
-        serializer = CartSerializer(usr,many = True)
-        return Response(serializer.data)
+        books_data = []
+        for cart in usr:
+            book = cart.book_id
+            image_data = None
+            if book.image:
+                with open(book.image.path, "rb") as image_file:
+                    image_data = base64.b64encode(image_file.read()).decode('utf-8')
+                book_data = {
+                    'id': book.id,
+                    'name': book.name,
+                    'price': book.price,
+                    'image_data': image_data,
+                    'quantity': cart.quantity,
+                    'total':book.price* cart.quantity
+                }
+                books_data.append(book_data)
 
-    def post(self,request):
-        data = request.data
-        serializer = CartSerializer(data = data)
-        if serializer.is_valid():
-            serializer.save()
-            res ={'msg':'Data has been created successfully'}
-            return Response(res)
-        return Response({'msg':serializer.errors})
+# return the list of book dictionaries as a JSON response
+        return Response({'books': books_data})
+    
     
     def delete(self,request):
-        usr = request.data
-        id = usr.get('id')
-        usr = Cart.objects.get(id=id)
-        usr.delete
-        res ={'msg':'Data has been deleted successfully'}
-        return Response(res)
+        book_id = request.data.get('book_id')
+        user_id = request.data.get('user_id')
+        try:
+            cart_obj = Cart.objects.get(book_id=book_id, user_id=user_id)
+            cart_obj.quantity = cart_obj.quantity - 1
 
+            if cart_obj.quantity <= 0:
+                cart_obj.delete()
+                return Response({'success':'deleted'})
+                
+            cart_obj.save()
+            serializer = CartSerializer(cart_obj)
+            
+            return Response(serializer.data)
+        except Cart.DoesNotExist:
+            return Response(status=404)
 
-
-
+class CAPI(APIView):
+    permission_classes = [IsAuthenticatedAndTokenValid]
+    def post(self, request):
+        auth_header = request.headers.get('Authorization')
+        token = auth_header.split(' ')[1]
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        user_id = payload.get('user_id')
+        serializer = CartSerializer(data=request.data)
+        if serializer.is_valid():
+            book_id = serializer.validated_data['book_id']
+            user_id = serializer.validated_data['user_id']
+            quantity = serializer.validated_data['quantity']
+            
+        # check if a cart item with the same book and user already exists
+            try:
+                cart_item = Cart.objects.get(book_id=book_id, user_id=user_id)
+                cart_item.quantity += quantity
+                cart_item.save()
+            except Cart.DoesNotExist:
+                serializer.save()
+            
+            return Response({'success': True})
+        return Response(serializer.errors, status=400)

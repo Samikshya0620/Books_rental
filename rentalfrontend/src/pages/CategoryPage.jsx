@@ -7,7 +7,7 @@ import Product from "../components/Product";
 import { productsContext } from "../context/productsContext";
 
 const CategoryPage = () => {
-  const products = useContext(productsContext);
+  const { products } = useContext(productsContext);
   const [selectedOption, setSelectedOption] = useState("option1");
   const [sortBy, setSortBy] = useState("newest");
   const [sortedProducts, setSortedProducts] = useState([]);
@@ -21,7 +21,7 @@ const CategoryPage = () => {
       if (selectedOption === "option1") {
         return true;
       } else {
-        return product.category === selectedOption;
+        return product.category_id.toString() === selectedOption;
       }
     });
     // Make a copy of the products array to avoid modifying the original array
@@ -62,9 +62,9 @@ const CategoryPage = () => {
               className="ml-3 border-2 border-silver mobile:ml-0"
             >
               <option value="option1">Category</option>
-              <option value="romance">Romance</option>
-              <option value="thriller">Thriller</option>
-              <option value="selfhelp">Self Help</option>
+              <option value="1">Romance</option>
+              <option value="2">Thriller</option>
+              <option value="3">Self Help</option>
               {/* <option value="comics">Comics</option> */}
             </select>
           </div>

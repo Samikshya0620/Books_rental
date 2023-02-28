@@ -89,13 +89,14 @@ class Cart(models.Model):
         return str(self.user_id)
     
 
-
+"""
 class Booking_item(models.Model):
     cart_id = models.ForeignKey(Cart,on_delete=models.CASCADE)
     
 
     def __str__(self):
         return self.__class__.__name__
+"""
 
 
 

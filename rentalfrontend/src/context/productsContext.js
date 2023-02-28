@@ -1,35 +1,64 @@
-import React, { createContext, useEffect } from "react";
-import { ApiTopPropduct } from "../Api/TopProductsApi";
+import React, { createContext, useEffect, useState } from "react";
 import http from "../services/httpService";
 import config from "../config.json";
+import { toast } from "react-toastify";
 
 const apiEndpoint = config.apiUrl + "bookapi";
 
 export const productsContext = createContext();
+
 export const ProductProvider = ({ children }) => {
-  async function getProducts() {
+  const [productapi, setProductapi] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [categoryapi, setCategoryapi] = useState([]);
+
+  async function getCategories() {
     try {
-      console.log(apiEndpoint);
-      const response = await http.get(apiEndpoint);
-      console.log(response);
+      const response = await http.get(config.apiUrl + "ctgapi");
+      setCategoryapi(response.data);
     } catch (error) {
       const expectedError =
         error.response &&
         error.response.status >= 400 &&
         error.response.status < 500;
       if (expectedError) {
-        console.log("No connection made");
+        toast.error("Something Went wrong");
       }
     }
   }
-  /*  console.log(ApiTopPropduct); */
+
+  async function getProducts() {
+    try {
+      const response = await http.get(apiEndpoint);
+      setProductapi(response.data);
+      setLoading(false);
+    } catch (error) {
+      const expectedError =
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status < 500;
+      if (expectedError) {
+        toast.error("No connection made");
+      }
+      setLoading(false);
+    }
+  }
   useEffect(() => {
-    getProducts();
-  }, []);
-  const products = ApiTopPropduct.map((product) => product);
-  /*  console.log(products); */
+    if (loading) {
+      getCategories();
+      getProducts();
+    }
+  }, [loading]);
+
+  const products = productapi.map((product) => product);
+  const categories = categoryapi.map((category) => category);
+
+  const productcontext = {
+    products: products,
+    categories: categories,
+  };
   return (
-    <productsContext.Provider value={products}>
+    <productsContext.Provider value={productcontext}>
       {children}
     </productsContext.Provider>
   );
