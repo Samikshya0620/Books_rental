@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.core.exceptions import ObjectDoesNotExist
 import jwt
+from rest_framework.exceptions import NotFound
 import base64
 from django.core.files.storage import default_storage
 from django.conf import settings
@@ -11,6 +12,7 @@ from rest_framework import status
 from .models import *
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAuthenticatedAndTokenValid
+from rest_framework import serializers
 from .serializers import *
 import datetime
 #from rest_framework_simplejwt.views import TokenObtainPairView
@@ -18,6 +20,7 @@ from .forms import CustomUserForm
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
+from django.core.serializers import serialize
 from django.contrib.auth.hashers import check_password
 import io
 from rest_framework.generics import GenericAPIView
@@ -27,6 +30,7 @@ import json
 from rest_framework.views import APIView
 from rest_framework.mixins import ListModelMixin,RetrieveModelMixin,CreateModelMixin
 from .tokens import *
+
 # Create your views here.
 def home(request):
     return render(request,"store/index.html")
@@ -134,7 +138,7 @@ def userapi(request):
 @api_view(['GET','POST'])
 def bookapi(request):
     if(request.method == 'GET'):
-        books = Book.objects.filter(status =  True)
+        books = Book.objects.filter(status = True)
         serialized_data = []
         for book in books:
             image_path = book.image.path
@@ -178,6 +182,7 @@ def categoryapi(request):
             res ={'msg':'Data has been created successfully'}
             return Response(res)
         return Response({'msg':serializer.errors})
+    
     
 class UserAPI(APIView):
     def get(self,request):
@@ -311,6 +316,3 @@ class CAPI(APIView):
             
             return Response({'success': True})
         return Response(serializer.errors, status=400)
-
-
-
