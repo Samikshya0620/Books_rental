@@ -1,65 +1,128 @@
 import { Badge } from "@mui/material";
 import { Search, ShoppingCartOutlined } from "@mui/icons-material";
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
+import { HiMenuAlt1, HiX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { CartContext } from "../context/cartContext";
 import { ToastContainer } from "react-toastify";
 import { AuthContext } from "../context/authContext";
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 const Navbar = () => {
+  const [toggle, setToggle] = useState(false);
+  const [active, setActive] = useState(null);
+
   const navigate = useNavigate();
   const { totalCounter: counter } = useContext(CartContext);
-  const { logoutUser } = useContext(AuthContext);
-  const style = "text-[14px] cursor-pointer ml-[25px] mobile:ml-[5px]";
+  const { logoutUser, user, authTokens } = useContext(AuthContext);
+  const style = "font-bold transition-all duration-300 p-2";
   const handleClick = () => {
     navigate("/cart");
   };
+  useEffect(() => {
+    const scrollActive = () => {
+      setActive(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", scrollActive);
+    return () => window.removeEventListener("scroll", scrollActive);
+  }, [active]);
 
   return (
-    <div className="navbar h-[60px] shadow-md relative z-10">
+    <div
+      className={`${
+        active ? "shadow-lg bg-Teal" : ""
+      } h-[60px] w-full top-0 left-0 z-20`}
+    >
       <ToastContainer />
-      <div className="wrapper pl-[20px] pr-[20px] pt-[10px] pb-[10px] flex justify-between items-center mobile:pl-0 mobile:pr-0">
-        <div className=" left flex flex-1  items-center">
-          {/* <div className="cursor-pointer text-[16px] mobile:hidden">En</div> */}
-
-          {/* Search Input */}
-          <div className="SearchContainer flex border-[2px] border-solid border-lightgrey rounded-md items-center ml-[10px] p-[5px]">
-            <input
-              type="text"
-              className="border-none mobile:w-[50px]"
-              placeholder="Search"
+      <div>
+        <div
+          className={`${
+            active ? "py-2 transition-all duration-300" : "py-4"
+          } container  mx-auto flex items-center justify-between px-2`}
+        >
+          <div className="flex items-center gap-4">
+            <HiMenuAlt1
+              className="text-3xl sm:hidden cursor-pointer"
+              onClick={() => setToggle(true)}
             />
-            <Search className="text-[#8a4af3] m" style={{ fontSize: "16px" }} />
+            <div className="text-xl text-Teal uppercase tracking-wide font-bold">
+              B-Book
+            </div>
           </div>
-        </div>
-
-        {/* Logo */}
-        <div className="center flex-1 text-center  mobile:ml-6">
-          <div className="logo text-3xl font-serif text mobile:text-sm">
-            B-BOOK
+          <div className="sm:flex items-center hidden">
+            <NavLink className={style} to="/home">
+              Home
+            </NavLink>
+            {!user && (
+              <NavLink className={style} to="/register">
+                Register
+              </NavLink>
+            )}
+            {!user && (
+              <NavLink className={style} to="/login">
+                Sign In
+              </NavLink>
+            )}
+            {user && (
+              <button className={style} onClick={() => logoutUser()}>
+                Log Out
+              </button>
+            )}
           </div>
-        </div>
-
-        {/* Right Side */}
-        <div className="right flex flex-1 items-center justify-end mobile:justify-center mobile:flex-[2]">
-          <NavLink className={style} to="/home">
-            Home
-          </NavLink>
-          <NavLink className={style} to="/register">
-            Register
-          </NavLink>
-          <NavLink className={style} to="/login">
-            Sign In
-          </NavLink>
-          <button className={style} onClick={() => logoutUser()}>
-            Log Out
+          <button className="py-3 px-6 font-bold text-sm border border-solid rounded-lg border-gray">
+            <Search />
           </button>
-          <div className={style}>
-            <Badge badgeContent={counter} color="primary">
-              <ShoppingCartOutlined onClick={handleClick} />
-            </Badge>
-          </div>
+          <Badge badgeContent={counter} color="primary">
+            <ShoppingCartOutlined
+              className="cursor-pointer"
+              onClick={handleClick}
+            />
+          </Badge>
+          {user && (
+            <div className="flex justify-end m-2 p-4">
+              <button> {user.username}</button>
+            </div>
+          )}
+
+          {toggle && (
+            <motion.div
+              initial={{ x: -500, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="fixed h-full w-96 top-0 left-0 z-20 bg-Teal text-white flex flex-col justify-center items-center shadow-lg gap-8 py-8"
+            >
+              <NavLink className={style} to="/home">
+                Home
+              </NavLink>
+              {!user && (
+                <NavLink className={style} to="/register">
+                  Register
+                </NavLink>
+              )}
+              {!user && (
+                <NavLink className={style} to="/login">
+                  Sign In
+                </NavLink>
+              )}
+              {user && (
+                <button className={style} onClick={() => logoutUser()}>
+                  Log Out
+                </button>
+              )}
+              <HiX
+                className="absolute right-12 top-12 text-3xl cursor-pointer"
+                onClick={(prev) => setToggle(!prev)}
+              />
+              <Badge badgeContent={counter} color="primary">
+                <ShoppingCartOutlined
+                  className="cursor-pointer"
+                  onClick={handleClick}
+                />
+              </Badge>
+            </motion.div>
+          )}
         </div>
       </div>
     </div>

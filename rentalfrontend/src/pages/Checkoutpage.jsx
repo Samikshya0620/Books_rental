@@ -6,7 +6,6 @@ import Announce from '../components/announcement';
 const CheckoutPage = () => {
     return ( 
         <Fragment>
-            <Announce/>
             <Navbar/>
             <Checkout/>
         </Fragment>

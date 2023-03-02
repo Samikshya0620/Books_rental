@@ -28,11 +28,10 @@ const Cart = () => {
     setItems,
     items,
     setTotalAmount,
-    calculateTotal
+    calculateTotal,
   } = useContext(CartContext);
   const [imageUrls, setImageUrls] = useState([]);
   const [loading, setLoading] = useState(true);
-
 
   useEffect(() => {
     const getitems = async () => {
@@ -61,7 +60,6 @@ const Cart = () => {
   }, [items]);
   return (
     <div>
-      <Announce />
       <Navbar />
       <div className="p-3">
         <div className="flex justify-center text-5xl">Cart</div>
@@ -70,17 +68,16 @@ const Cart = () => {
         <div className="flex items-center justify-between mt-4 mobile:flex-col">
           <button
             onClick={() => navigate("/")}
-            className="btn mt-0 rounded px-1 py-1 bg-gradient-to-r from-cyan-500 to to-blue-500"
+            className="btn font-bold mt-0 rounded-lg p-2 hover:scale-105  bg-teal-500"
           >
             Rent More
           </button>
-          <div className="flex underline text-lg hover:cursor-pointer mobile:m-5">
-            <p>Items in your Cart:{items.length} </p>
-            <p className="ml-5">Whishlist Items: 0</p>
+          <div className="flex text-xl font-bold hover:cursor-pointer mobile:m-5">
+            <p>Items in your Cart: {items.length} </p>
           </div>
           <button
             onClick={() => navigate("/checkout")}
-            className="btn mt-0 rounded px-1 py-1 bg-gradient-to-r from-cyan-500 to to-blue-500"
+            className="btn mt-0 font-bold rounded-lg p-2 hover:scale-105  bg-teal-500"
           >
             Checkout Now
           </button>
@@ -102,14 +99,10 @@ const Cart = () => {
                     />
                     {/* {console.log(item[0].src)} */}
 
-                    <div className="disc flex items-start justify-start h-auto flex-col ml-6">
-                      <p>
-                        <b className="mr-2">ID:</b>
-                        {item.id}
-                      </p>
-                      <p>
-                        <b className="mr-2">Product:</b>
-                        {item.title}
+                    <div className="disc flex items-center justify-center h-auto flex-col ml-6">
+                      <p className="font-bold text-2xl">
+                        <b className="mr-2"></b>
+                        {item.name}
                       </p>
                     </div>
                   </div>
@@ -117,8 +110,8 @@ const Cart = () => {
                   {/*Price and Quantity Div*/}
                   <div className={PriceQuantityStyle}>
                     <Counter item={item} />
-                    <p className="flex items-center justify-center text-4xl mt-3">
-                      <b>{item.price * item.quantity}</b>
+                    <p className="flex items-center justify-center text-2xl mt-3">
+                      <b>Rs. {item.price * item.quantity}</b>
                     </p>
                   </div>
                 </div>
@@ -136,15 +129,15 @@ const Cart = () => {
             </div>
             <div className={SummaryItemStyle}>
               <p>Shipping:</p>
-              <p>100</p>
+              <p>Rs. 0</p>
             </div>
             <div className={SummaryItemStyle}>
               <p>Shipping Discount:</p>
-              <p>-100</p>
+              <p>Rs. 0</p>
             </div>
             <div className={SummaryItemStyle + " text-3xl font-bold"}>
               <p>Total:</p>
-              <p>{totalAmount}</p>
+              <p>Rs. {totalAmount}</p>
             </div>
           </div>
         </div>
