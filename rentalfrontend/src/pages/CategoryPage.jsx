@@ -1,12 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import Announce from "../components/announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import Product from "../components/Product";
 import { productsContext } from "../context/productsContext";
 import { motion } from "framer-motion";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
 
 const CategoryPage = () => {
   const { products } = useContext(productsContext);
@@ -17,10 +16,9 @@ const CategoryPage = () => {
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
-  const handleClick = ()=>{
+  const handleClick = () => {
     toast.success("Added to Cart Successfully");
-  
-  }
+  };
 
   useEffect(() => {
     const filteredProducts = products.filter((product) => {
@@ -93,8 +91,8 @@ const CategoryPage = () => {
 
       <div className="grid md:grid-cols-4 sm:grid-cols-2 mt-12 gap-8 place-items-center place-content-center">
         {sortedProducts.map((product, index) => (
-          <motion.div whileHover={{ scale: 1.2 }} key= {index} >
-            <Product item={product} key={index} onClick= {handleClick} />
+          <motion.div whileHover={{ scale: 1.2 }} key={index}>
+            <Product item={product} key={index} onClick={handleClick} />
           </motion.div>
         ))}
       </div>
