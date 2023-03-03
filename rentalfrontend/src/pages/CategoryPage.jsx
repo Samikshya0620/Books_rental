@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import Announce from "../components/announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import Product from "../components/Product";
 import { productsContext } from "../context/productsContext";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 const CategoryPage = () => {
   const { products } = useContext(productsContext);
@@ -14,6 +15,9 @@ const CategoryPage = () => {
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
+  };
+  const handleClick = () => {
+    toast.success("Added to Cart Successfully");
   };
 
   useEffect(() => {
@@ -49,10 +53,8 @@ const CategoryPage = () => {
   }, [products, sortBy, selectedOption]);
   return (
     <div>
-      <Announce />
       <Navbar />
       <div className="flex flex-col p-5">
-        <h1 className="text-[30px]">Men's</h1>
         <div className="flex items-center justify-between mt-3">
           <div className="flex mobile:flex-col">
             <p>Filter by</p>
@@ -64,7 +66,10 @@ const CategoryPage = () => {
               <option value="option1">Category</option>
               <option value="1">Romance</option>
               <option value="2">Thriller</option>
-              <option value="3">Self Help</option>
+              <option value="3">Horror</option>
+              <option value="5">Comedy</option>
+              <option value="6">Self Help</option>
+              <option value="11">Biographies</option>
               {/* <option value="comics">Comics</option> */}
             </select>
           </div>
@@ -83,9 +88,12 @@ const CategoryPage = () => {
           </div>
         </div>
       </div>
-      <div className="p-5 flex flex-wrap">
+
+      <div className="grid md:grid-cols-4 sm:grid-cols-2 mt-12 gap-8 place-items-center place-content-center">
         {sortedProducts.map((product, index) => (
-          <Product item={product} key={index} />
+          <motion.div whileHover={{ scale: 1.2 }} key={index}>
+            <Product item={product} key={index} onClick={handleClick} />
+          </motion.div>
         ))}
       </div>
 

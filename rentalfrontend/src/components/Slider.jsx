@@ -12,6 +12,17 @@ const Slider = () => {
   const [slides] = useState(ApiSlides);
   const [activeSlide, setActiveSlide] = useState(0);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (activeSlide === slides.length - 1) {
+        setActiveSlide(0);
+      } else {
+        setActiveSlide(activeSlide + 1);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [activeSlide, slides.length]);
+
   const prevSlide = () => {
     if (activeSlide === 0) {
       setActiveSlide(slides.length - 1);
@@ -40,7 +51,7 @@ const Slider = () => {
           return (
             <div
               className={
-                `wrapper flex w-[100%] h-[500px] items-center justify-center shadow-2xl rounded-lg border-[#c0c0c0] border-10px overflow-hidden relative` +
+                "wrapper flex w-[100%] h-[500px] items-center justify-center shadow-2xl rounded-lg border-[#c0c0c0] border-10px overflow-hidden relative" +
                 slide.background
               }
               key={index}

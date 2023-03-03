@@ -1,53 +1,38 @@
-import {
-  FavoriteBorderOutlined,
-  ShoppingCartOutlined,
-} from "@mui/icons-material";
+import { ShoppingCartOutlined } from "@mui/icons-material";
+
 import React, { useContext, useState } from "react";
 import { CartContext } from "../context/cartContext";
+import { toast } from "react-toastify";
 
 const Product = ({ item }) => {
   const image = new Image();
   image.src = `data:image/jpeg;base64,${item.image}`;
   const { addItem } = useContext(CartContext);
-  const [hoverEffects, setHoverEffects] = useState(" opacity-0");
+  const [clicked, setClicked] = useState(false);
   const handleClick = () => {
     addItem(item);
+    toast.success("Added to cart Successfully");
+    setClicked(true);
   };
-  const iconStyle =
-    "h-[40px] w-[40px] rounded-full bg-white flex items-center justify-center m-3 hover:bg-[#894af3] hover:text-white hover:scale-[1.1] ease-in duration-100 cursor-pointer";
-
-  function handleHoverEnter() {
-    setHoverEffects(" opacity-1 bg-[rgba(0,0,0,0.2)]");
-  }
-
-  function handleHoverExit() {
-    setHoverEffects(" opacity-0");
-  }
   return (
-    <div
-      className="flex items-center justify-center flex-1 min-w-[280px] min-h-[350px] m-2 overflow-hidden rounded-md shadow-lg relative"
-      onMouseEnter={handleHoverEnter}
-      onMouseLeave={handleHoverExit}
-    >
-      <img
-        src={image.src}
-        alt="product"
-        className="w-[200px] h-[200px] overflow-hidden"
-      />
-      <div
-        className={
-          `flex items-center justify-center absolute w-[100%] h-[100%] ease-in duration-100` +
-          hoverEffects
-        }
-      >
-        <div className={iconStyle}>
-          <ShoppingCartOutlined onClick={handleClick} />
-        </div>
-        <div className={iconStyle}>
-          <FavoriteBorderOutlined />
-        </div>
+    <div className="p-2 shadow-lg min-w-[15rem] bg-white rounded-md m-2">
+      <div className="flex justify-center items-center">
+
+      <img src={image.src} alt="" className="w-[200px] h-[200px]" />
       </div>
-      <p>{item.name}</p>
+      <div className="text-sm mt-2 font-bold">{item.name}</div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="bg-Solitude p-1 rounded-full">
+            <ShoppingCartOutlined
+              className="cursor-pointer hover:scale-125"
+              onClick={handleClick}
+            />
+          </div>
+          {/* <div className="text-sm font-bold">Rating</div> */}
+        </div>
+        <div className="text-sm font-bold">Rs.{item.price}</div>
+      </div>
     </div>
   );
 };

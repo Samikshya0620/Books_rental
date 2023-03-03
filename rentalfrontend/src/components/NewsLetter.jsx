@@ -2,7 +2,7 @@ import React from "react";
 import { Send } from "@mui/icons-material";
 const NewsLetter = () => {
   return (
-    <div className="flex justify-center items-center h-[250px] w-[100%] flex-col bg-[#c4a4f9]">
+    <div className="flex justify-center items-center h-[250px] w-[100%] flex-col bg-[#e0fff3]">
       {/* <h1 className="text-[50px] font-bold">NEWSLETTER</h1> */}
       <h2 className="text-[20px] mt-2 mobile:text-center mobile:p-3">
         Get updated with our latest available books.

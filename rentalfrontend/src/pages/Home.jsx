@@ -20,7 +20,6 @@ const Home = () => {
   }, [secondloading]);
   return (
     <div>
-      <Announce />
       <Navbar />
       <Slider />
       <Categories />
