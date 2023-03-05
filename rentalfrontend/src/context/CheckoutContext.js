@@ -3,24 +3,57 @@ import React, { createContext, useState } from "react";
 export const CheckoutContext = createContext();
 
 export const CheckoutProvider = ({ children }) => {
-  const [addressInfo, setAddressInfo] = useState({
-    firstName: "",
-    lastName: "",
-    addressLine1: "",
-    addressLine2: "",
-    city: "",
-    state: "",
-    contactno: "",
-  });
-  const [paymentInfo, setPaymentInfo] = useState({
-    method: "",
-  });
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [city, setCity] = React.useState("");
+  const [state, setState] = React.useState("");
+  const [saveAddress, setSaveAddress] = React.useState(false);
+  const [paymentMethod, setPaymentMethod] = React.useState("cash_on_delivery");
+
+  const handlePaymentMethodChange = (event) => {
+    setPaymentMethod(event.target.value);
+  };
+
+  const handleFirstNameChange = (event) => {
+    setFirstName(event.target.value);
+  };
+
+  const handleLastNameChange = (event) => {
+    setLastName(event.target.value);
+  };
+
+  const handleAddressChange = (event) => {
+    setAddress(event.target.value);
+  };
+
+  const handleCityChange = (event) => {
+    setCity(event.target.value);
+  };
+
+  const handleStateChange = (event) => {
+    setState(event.target.value);
+  };
+
+  const handleSaveAddressChange = (event) => {
+    setSaveAddress(event.target.checked);
+  };
 
   const values = {
-    addressInfo,
-    paymentInfo,
-    setAddressInfo,
-    setPaymentInfo,
+    handleFirstNameChange: handleFirstNameChange,
+    handleLastNameChange: handleLastNameChange,
+    handleAddressChange: handleAddressChange,
+    handleCityChange: handleCityChange,
+    handleStateChange: handleStateChange,
+    handleSaveAddressChange: handleSaveAddressChange,
+    handlePaymentMethodChange: handlePaymentMethodChange,
+    paymentMethod: paymentMethod,
+    firstName: firstName,
+    lastName: lastName,
+    address: address,
+    city: city,
+    state: state,
+    saveAddress: saveAddress,
   };
 
   return (

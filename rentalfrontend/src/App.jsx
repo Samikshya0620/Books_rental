@@ -22,8 +22,7 @@ const Layout = () => {
 function App() {
   return (
     <AuthProvider>
-      <CheckoutProvider>
-        <CartProvider>
+      <CartProvider>
           <ProductProvider>
             <Routes>
               <Route path="/" element={<Layout />}>
@@ -41,8 +40,7 @@ function App() {
               </Route>
             </Routes>
           </ProductProvider>
-        </CartProvider>
-      </CheckoutProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }
