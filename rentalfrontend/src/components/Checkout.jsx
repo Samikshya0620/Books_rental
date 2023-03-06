@@ -17,6 +17,9 @@ import Review from "./Review";
 import { CheckoutContext, CheckoutProvider } from "../context/CheckoutContext";
 import { CartProvider } from "../context/cartContext";
 import { CartContext } from "../context/cartContext";
+import { AuthContext } from "../context/authContext";
+import { toast } from "react-toastify";
+import http from "../services/httpService";
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
@@ -49,11 +52,41 @@ function getStepContent(step) {
 const theme = createTheme();
 
 export default function Checkout() {
+  const { user, authTokens } = React.useContext(AuthContext);
   const { items } = React.useContext(CartContext);
-  console.log(items);
+  /*   const {address, paymentMethod} = React.useContext(CheckoutContext);
+  console.log(address); */
   const [activeStep, setActiveStep] = React.useState(0);
+  const [isPlacingOrder, setIsPlacingOrder] = React.useState(false);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
+  };
+  const handlePlaceOrder = () => {
+    handleNext();
+    if (activeStep === steps.length - 1) {
+      console.log("Order Placed");
+      /*     try {
+      const response = await http.post("",  {
+        headers: {
+          Authorization: "Bearer " + authTokens.access_token,
+        },
+        data: {},
+      })
+      if (response.ok) {
+        // Order placed successfully
+        console.log("Order placed successfully!");
+      } else {
+        // Handle error response from server
+        console.error("Failed to place order: ", response.statusText);
+      }
+    } catch (error) {
+      toast.error("Failed to place order: ", error.message);
+      
+    }
+    finally {
+      setIsPlacingOrder(false);
+    } */
+    }
   };
 
   const handleBack = () => {
@@ -94,9 +127,7 @@ export default function Checkout() {
                   Thank you for your order.
                 </Typography>
                 <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order
-                  confirmation, and will send you an update when your order has
-                  shipped.
+                  Your order number is ... books will be available soon
                 </Typography>
               </React.Fragment>
             ) : (
@@ -111,8 +142,9 @@ export default function Checkout() {
 
                   <Button
                     variant="contained"
-                    onClick={handleNext}
+                    onClick={handlePlaceOrder}
                     sx={{ mt: 3, ml: 1 }}
+                    disabled={isPlacingOrder}
                   >
                     {activeStep === steps.length - 1 ? "Place order" : "Next"}
                   </Button>

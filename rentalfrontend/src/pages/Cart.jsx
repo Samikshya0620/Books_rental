@@ -3,7 +3,6 @@ import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import Footer from "../components/Footer";
 import Counter from "../components/Counter";
-import Announce from "../components/announcement";
 import { useContext } from "react";
 import { CartContext } from "../context/cartContext";
 import { AuthContext } from "../context/authContext";
@@ -30,6 +29,7 @@ const Cart = () => {
     setTotalAmount,
     calculateTotal,
   } = useContext(CartContext);
+
   const [imageUrls, setImageUrls] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,6 +58,7 @@ const Cart = () => {
     setTotalAmount(total);
     setTotalCounter(items.length);
   }, [items]);
+
   return (
     <div>
       <Navbar />

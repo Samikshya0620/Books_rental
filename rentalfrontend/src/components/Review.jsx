@@ -7,14 +7,6 @@ import Grid from "@mui/material/Grid";
 import { CartContext, CartProvider } from "../context/cartContext";
 import { CheckoutContext } from "../context/CheckoutContext";
 
-/* const addresses = ["1 MUI Drive", "Reactville", "Anytown", "99999", "USA"];
-const payments = [
-  { name: "Card type", detail: "Visa" },
-  { name: "Card holder", detail: "Mr John Smith" },
-  { name: "Card number", detail: "xxxx-xxxx-xxxx-1234" },
-  { name: "Expiry date", detail: "04/2024" },
-]; */
-
 export default function Review() {
   const { items, totalAmount } = React.useContext(CartContext);
   const { address, paymentMethod, state } = React.useContext(CheckoutContext);

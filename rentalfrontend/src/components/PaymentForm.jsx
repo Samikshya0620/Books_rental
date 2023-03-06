@@ -4,12 +4,13 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { CheckoutContext } from "../context/CheckoutContext";
 
 export default function PaymentForm() {
-const {paymentMethod, handlePaymentMethodChange} = React.useContext(CheckoutContext);
-/* console.log(handlePaymentMethodChange); */
+  const { paymentMethod, handlePaymentMethodChange } =
+    React.useContext(CheckoutContext);
+  /* console.log(handlePaymentMethodChange); */
 
   return (
     <React.Fragment>
