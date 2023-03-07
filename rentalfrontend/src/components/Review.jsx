@@ -12,6 +12,7 @@ export default function Review() {
     React.useContext(CartContext);
   const { address, paymentMethod, state, setReviewData } = React.useContext(CheckoutContext);
   const [loading, setLoading] = React.useState(true);
+  
   React.useEffect(() => {
     const total = calculateTotal(items);
     setTotalAmount(total);

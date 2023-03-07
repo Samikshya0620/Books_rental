@@ -8,14 +8,12 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import Review from "./Review";
 import { CheckoutContext, CheckoutProvider } from "../context/CheckoutContext";
-import { CartProvider } from "../context/cartContext";
 import { CartContext } from "../context/cartContext";
 import { AuthContext } from "../context/authContext";
 import { toast } from "react-toastify";
@@ -23,10 +21,7 @@ import http from "../services/httpService";
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
+      {"Copyright © B-Book "}
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -53,6 +48,13 @@ const theme = createTheme();
 
 export default function Checkout() {
   const [loading, setLoading] = React.useState(true);
+  const { user, authTokens } = React.useContext(AuthContext);
+  const { items, getItems } = React.useContext(CartContext);
+  const { handlePlaceOrder } = React.useContext(CheckoutContext);
+  /*  const { firstName, lastName, address, city, state } = React.useContext(CheckoutContext); */
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [isPlacingOrder, setIsPlacingOrder] = React.useState(false);
+
   React.useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -64,15 +66,13 @@ export default function Checkout() {
     };
     fetchItems();
   }, [loading]);
-  const { user, authTokens } = React.useContext(AuthContext);
-  const { items, getItems } = React.useContext(CartContext);
-  const { handlePlaceOrder, reviewData } = React.useContext(CheckoutContext);
-  /*  const { firstName, lastName, address, city, state } = React.useContext(CheckoutContext); */
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [isPlacingOrder, setIsPlacingOrder] = React.useState(false);
+
+
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
+
+
   const handlePlaceOrderinCheckout = () => {
     handleNext();
     if (activeStep === steps.length - 1) {
