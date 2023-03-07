@@ -10,7 +10,7 @@ export const CheckoutProvider = ({ children }) => {
   const [state, setState] = React.useState("");
   const [saveAddress, setSaveAddress] = React.useState(false);
   const [paymentMethod, setPaymentMethod] = React.useState("cash_on_delivery");
-
+  const [reviewData, setReviewData] = useState(null);
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
   };
@@ -38,6 +38,11 @@ export const CheckoutProvider = ({ children }) => {
   const handleSaveAddressChange = (event) => {
     setSaveAddress(event.target.checked);
   };
+  const handlePlaceOrder = () => {
+    console.log(firstName, lastName);
+    // make API call using reviewData
+    console.log("Placing order with data:");
+  };
 
   const values = {
     handleFirstNameChange: handleFirstNameChange,
@@ -47,6 +52,8 @@ export const CheckoutProvider = ({ children }) => {
     handleStateChange: handleStateChange,
     handleSaveAddressChange: handleSaveAddressChange,
     handlePaymentMethodChange: handlePaymentMethodChange,
+    handlePlaceOrder: handlePlaceOrder,
+    setReviewData: setReviewData,
     paymentMethod: paymentMethod,
     firstName: firstName,
     lastName: lastName,

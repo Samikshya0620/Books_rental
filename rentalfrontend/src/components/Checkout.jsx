@@ -52,19 +52,33 @@ function getStepContent(step) {
 const theme = createTheme();
 
 export default function Checkout() {
+  const [loading, setLoading] = React.useState(true);
+  React.useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        await getItems();
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchItems();
+  }, [loading]);
   const { user, authTokens } = React.useContext(AuthContext);
-  const { items } = React.useContext(CartContext);
-  /*   const {address, paymentMethod} = React.useContext(CheckoutContext);
-  console.log(address); */
+  const { items, getItems } = React.useContext(CartContext);
+  const { handlePlaceOrder, reviewData } = React.useContext(CheckoutContext);
+  /*  const { firstName, lastName, address, city, state } = React.useContext(CheckoutContext); */
   const [activeStep, setActiveStep] = React.useState(0);
   const [isPlacingOrder, setIsPlacingOrder] = React.useState(false);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
-  const handlePlaceOrder = () => {
+  const handlePlaceOrderinCheckout = () => {
     handleNext();
     if (activeStep === steps.length - 1) {
       console.log("Order Placed");
+      handlePlaceOrder();
+      /*     console.log(firstName, lastName, address, city, state); */
       /*     try {
       const response = await http.post("",  {
         headers: {
@@ -142,7 +156,7 @@ export default function Checkout() {
 
                   <Button
                     variant="contained"
-                    onClick={handlePlaceOrder}
+                    onClick={handlePlaceOrderinCheckout}
                     sx={{ mt: 3, ml: 1 }}
                     disabled={isPlacingOrder}
                   >

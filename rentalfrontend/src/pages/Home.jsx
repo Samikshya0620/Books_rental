@@ -10,12 +10,22 @@ import { CartContext } from "../context/cartContext";
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [secondloading, setSecondLoading] = useState(true);
-  const { getItems } = useContext(CartContext);
   useEffect(() => {
-    getItems();
-    setLoading(false);
+    const fetchItems = async () => {
+      try {
+        await getItems();
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchItems();
   }, [loading]);
+
+  const { getItems, items} = useContext(CartContext);
+  
   useEffect(() => {
+    console.log(items);
     setSecondLoading(false);
   }, [secondloading]);
   return (

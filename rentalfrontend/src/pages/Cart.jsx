@@ -21,7 +21,7 @@ const Cart = () => {
 
   const {
     totalAmount,
-    addItem,
+    handleAddItem,
     setTotalCounter,
     totalCounter,
     setItems,
@@ -40,7 +40,7 @@ const Cart = () => {
           Authorization: "Bearer " + authTokens.access_token,
         },
       });
-      console.log(await response.data["books"]);
+      /*    console.log(await response.data["books"]); */
       setItems(await response.data["books"]);
     };
     getitems();

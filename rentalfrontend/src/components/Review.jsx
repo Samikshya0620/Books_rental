@@ -8,9 +8,16 @@ import { CartContext, CartProvider } from "../context/cartContext";
 import { CheckoutContext } from "../context/CheckoutContext";
 
 export default function Review() {
-  const { items, totalAmount } = React.useContext(CartContext);
-  const { address, paymentMethod, state } = React.useContext(CheckoutContext);
-  console.log(items);
+  const { items, totalAmount, setTotalAmount, calculateTotal } =
+    React.useContext(CartContext);
+  const { address, paymentMethod, state, setReviewData } = React.useContext(CheckoutContext);
+  const [loading, setLoading] = React.useState(true);
+  React.useEffect(() => {
+    const total = calculateTotal(items);
+    setTotalAmount(total);
+    setLoading(false);
+    setReviewData(address);
+  }, [loading]);
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>

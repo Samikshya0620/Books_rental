@@ -6,7 +6,7 @@ export const ApiSlides = [
       h2: "Lets dig into the world of books.",
       p: "Resonable, Economical and Efficient",
     },
-    background: " bg-[#e0fff3]",
+    background: "bg-[#e0fff3]",
   },
   {
     src: "https://th.bing.com/th/id/R.d61d40826f5ad98f3afe762e94634b54?rik=o4aom%2fT7mJfMPA&pid=ImgRaw&r=0",
