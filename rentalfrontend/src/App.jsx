@@ -14,7 +14,6 @@ import { CartProvider } from "./context/cartContext";
 import { AuthProvider } from "./context/authContext";
 import { PrivateRoute } from "./services/privateRoute";
 import CheckoutPage from "./pages/Checkoutpage";
-import { CheckoutProvider } from "./context/CheckoutContext";
 const Layout = () => {
   return <Outlet />;
 };
@@ -22,27 +21,25 @@ const Layout = () => {
 function App() {
   return (
     <AuthProvider>
-      <CheckoutProvider>
-        <CartProvider>
-          <ProductProvider>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="register" element={<Registers />} />
-                <Route path="product" element={<ProductPage />} />
-                <Route path="login" element={<Login />} />
-                <Route
-                  path="cart"
-                  element={<PrivateRoute Component={Cart} />}
-                />
-                <Route path="category" element={<CategoryPage />} />
-                <Route path="checkout" element={<CheckoutPage />} />
-                <Route path="*" element={<Navigate to={"/"} replace />} />
-              </Route>
-            </Routes>
-          </ProductProvider>
-        </CartProvider>
-      </CheckoutProvider>
+      <CartProvider>
+        <ProductProvider>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="register" element={<Registers />} />
+              <Route path="product" element={<ProductPage />} />
+              <Route path="login" element={<Login />} />
+              <Route path="cart" element={<PrivateRoute Component={Cart} />} />
+              <Route path="category" element={<CategoryPage />} />
+              <Route
+                path="checkout"
+                element={<PrivateRoute Component={CheckoutPage} />}
+              />
+              <Route path="*" element={<Navigate to={"/"} replace />} />
+            </Route>
+          </Routes>
+        </ProductProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }

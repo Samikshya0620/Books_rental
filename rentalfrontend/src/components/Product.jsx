@@ -17,8 +17,7 @@ const Product = ({ item }) => {
   return (
     <div className="p-2 shadow-lg min-w-[15rem] bg-white rounded-md m-2">
       <div className="flex justify-center items-center">
-
-      <img src={image.src} alt="" className="w-[200px] h-[200px]" />
+        <img src={image.src} alt="" className="w-[200px] h-[200px]" />
       </div>
       <div className="text-sm mt-2 font-bold">{item.name}</div>
       <div className="flex items-center justify-between">

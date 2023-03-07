@@ -33,10 +33,10 @@ const Navbar = () => {
     <div
       className={`${
         active ? "shadow-lg bg-Teal" : ""
-      } h-[60px] w-full top-0 left-0 z-20`}
+      } h-[60px] w-full top-0 left-0 z-20 mb-5`}
     >
       <ToastContainer />
-      <div>
+      <div className="grid grid-cols-3 gap-2">
         <div
           className={`${
             active ? "py-2 transition-all duration-300" : "py-4"
@@ -47,13 +47,24 @@ const Navbar = () => {
               className="text-3xl sm:hidden cursor-pointer"
               onClick={() => setToggle(true)}
             />
-            <div className="text-xl text-Teal uppercase tracking-wide font-bold">
+            <div className="text-xl text-Teal uppercase tracking-wide font-bold m-2 ml-5">
               B-Book
             </div>
           </div>
-          <div className="sm:flex items-center hidden">
+          </div>
+          <div className="flex justify-end py-4 px-4 ">
+
+{/*           <button className="font-bold text-sm border border-solid rounded-lg border-gray">
+            <Search />
+          </button> */}
+          </div>
+          
+          <div className="sm:flex items-center hidden justify-end p-2 m-2 gap-4">
             <NavLink className={style} to="/home">
               Home
+            </NavLink>
+            <NavLink className={style} to="/category">
+              Books
             </NavLink>
             {!user && (
               <NavLink className={style} to="/register">
@@ -70,10 +81,6 @@ const Navbar = () => {
                 Log Out
               </button>
             )}
-          </div>
-          <button className="py-3 px-6 font-bold text-sm border border-solid rounded-lg border-gray">
-            <Search />
-          </button>
           <Badge badgeContent={counter} color="primary">
             <ShoppingCartOutlined
               className="cursor-pointer"
@@ -81,9 +88,7 @@ const Navbar = () => {
             />
           </Badge>
           {user && (
-            <div className="flex justify-end m-2 p-4">
               <button> {user.username}</button>
-            </div>
           )}
 
           {toggle && (
