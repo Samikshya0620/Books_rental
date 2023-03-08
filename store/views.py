@@ -366,11 +366,12 @@ class Paymentitem(APIView):
 
             if final_items_serializer.is_valid():
                 final_items_serializer.save()
-                cart_obj = Cart.objects.filter(user_id=user_id, many= True)
-                cart_obj.delete() 
+
                 
             else:
                 payment.delete()
                 return Response(final_items_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        cart_obj = Cart.objects.filter(user_id=user_id)
+        cart_obj.delete()
         return Response({'Data added Successfully.': True}, status=status.HTTP_200_OK)
