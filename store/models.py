@@ -98,34 +98,32 @@ class Booking_item(models.Model):
         return self.__class__.__name__
 """
 
-
-
-class Payment_Detail(models.Model):
-    #booking_details_id = models.ForeignKey(booking_detail, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits = 20,null = False, blank = False,decimal_places=10)
-    provider = models.CharField(max_length=150,null = False, blank = False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.__class__.__name__
-        
-        
-class booking_detail(models.Model):
-    #user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    total = models.IntegerField(null = False, blank = False)
-    booking_status= models.BooleanField(default = False , help_text = "0=Default, 1=Booked")
-    payment_details_id = models.ForeignKey(Payment_Detail,on_delete= models.CASCADE)
-    overdue_status = models.BooleanField(default= False,help_text= "0=Default, 1 = Overdue" )
-    overdue_time =  models.BooleanField(default= False,help_text= "0=Default, 1 = Overtime" )
-    start_time = models. DateField()
-    end_time = models.DateField()
-    security_deposit = models.DecimalField(max_digits = 20,null = False, blank = False,decimal_places=10)
-    created_at = models.DateField(auto_now_add=True)
-    modified_at = models.DateField(auto_now=True)
+class Payment(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    firstname = models.CharField(max_length= 50)
+    lastname = models.CharField(max_length=50)
+    address = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
+    paymentmethod = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.__class__.__name__
+        return str(self.user_id)
+
+
+
+class FinalItem(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)   
+    productid = models.IntegerField()
+    #image_data = models.ImageField(upload_to = get_file_path,null= True, blank = True)
+    name = models.CharField(max_length=50)
+    price = models.IntegerField()
+    quantity = models.IntegerField()
+    total = models.IntegerField()
+    order_date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.user_id)
 
 
 

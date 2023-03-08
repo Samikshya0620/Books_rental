@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 import http from "../services/httpService";
 import config from "../config.json";
 
-const apiEndpoint = config.apiUrl + "";
+const apiEndpoint = config.apiUrl + "final";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -58,7 +58,7 @@ export default function Checkout() {
   const [loading, setLoading] = React.useState(true);
   const { user, authTokens } = React.useContext(AuthContext);
   const { items, getItems } = React.useContext(CartContext);
-  const { firstName, lastName, address, city, state } =
+  const { firstName, lastName, address, city, state, paymentMethod } =
     React.useContext(CheckoutContext);
   const [activeStep, setActiveStep] = React.useState(0);
   const [isPlacingOrder, setIsPlacingOrder] = React.useState(false);
@@ -86,6 +86,7 @@ export default function Checkout() {
         const { image_data, ...itemWithoutImageData } = item;
         return itemWithoutImageData;
       });
+
       try {
         const response = await http.post(
           apiEndpoint,
@@ -96,6 +97,7 @@ export default function Checkout() {
             city: city,
             state: state,
             items: newItems,
+            paymentmethod: paymentMethod,
           },
           {
             headers: {
@@ -104,12 +106,8 @@ export default function Checkout() {
             },
           }
         );
-        if (response.ok) {
-          // Order placed successfully
-          console.log("Order placed successfully!");
-        } else {
-          // Handle error response from server
-          console.error("Failed to place order: ", response.statusText);
+        if (response.status === 200) {
+          toast.success("Order Placed Successfully");
         }
       } catch (error) {
         toast.error("Failed to place order: ", error.message);
