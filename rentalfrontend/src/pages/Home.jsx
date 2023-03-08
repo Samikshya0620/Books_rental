@@ -9,6 +9,7 @@ import Slider from "../components/Slider";
 import { CartContext } from "../context/cartContext";
 const Home = () => {
   const [loading, setLoading] = useState(true);
+  const { getItems, items} = useContext(CartContext);
   const [secondloading, setSecondLoading] = useState(true);
   useEffect(() => {
     const fetchItems = async () => {
@@ -22,12 +23,7 @@ const Home = () => {
     fetchItems();
   }, [loading]);
 
-  const { getItems, items} = useContext(CartContext);
-  
-  useEffect(() => {
-    console.log(items);
-    setSecondLoading(false);
-  }, [secondloading]);
+
   return (
     <div>
       <Navbar />

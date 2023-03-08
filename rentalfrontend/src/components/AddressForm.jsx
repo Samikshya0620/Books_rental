@@ -20,7 +20,6 @@ export default function AddressForm() {
     handleCityChange,
     handleSaveAddressChange,
     handleStateChange,
-    handleSubmit,
   } = React.useContext(CheckoutContext);
   return (
     <React.Fragment>
