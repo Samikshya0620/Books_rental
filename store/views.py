@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.core.exceptions import ObjectDoesNotExist
 import jwt
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.utils.http import urlsafe_base64_encode
 from django.shortcuts import get_object_or_404
@@ -383,6 +384,7 @@ class Paymentitem(APIView):
             return Response(payment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         final_items_data = data['items']
+        print(final_items_data)
         
         for item_data in final_items_data:
             item = {
@@ -393,19 +395,21 @@ class Paymentitem(APIView):
                 'quantity': item_data['quantity'],
                 'total': item_data['total']
             }
-            print(item)
+            print(item_data['productid'])
             final_items_serializer = FinalItemSerializer(data=item)
 
             if final_items_serializer.is_valid():
                 final_items_serializer.save()
+                         
             else:
                 payment.delete()
                 return Response(final_items_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        cart_obj = Cart.objects.filter(user_id=user_id)
+        cart_obj.delete()
         return Response({'Data added Successfully.': True}, status=status.HTTP_200_OK)
 
     
-    
+  
 class PassAPI(APIView):
     def post(self,request):
         data = request.data  
@@ -431,6 +435,7 @@ class PassAPI(APIView):
     
 
 class PasswordResetView(APIView):
+    @csrf_exempt
     def post(self, request):
         data = request.data
 
@@ -454,4 +459,28 @@ class PasswordResetView(APIView):
         user.reset_password(password)
 
         return Response({'success': 'Password reset successful'}, status=status.HTTP_200_OK)
+
+
+
+class ProfileAPI(APIView):
+    permission_classes = [IsAuthenticatedAndTokenValid]
+    def get(self, request):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return Response({'message': 'Please sign in.'}, status=401)
+
+        try:      
+            token = auth_header.split(' ')[1]
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        except (jwt.DecodeError, IndexError):
+            return Response({'error': 'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+        user_id = payload.get('user_id')
+        usr = FinalItem.objects.filter(user_id=user_id)
+        userprofile = User.objects.filter(id = user_id).values('username', 'email', 'firstname', 'lastname').first()
+        print(userprofile)
+        
+
+        serializer = FinalItemSerializer(usr,many = True)
+        
+        return Response(serializer.data)
     
