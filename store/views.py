@@ -316,3 +316,61 @@ class CAPI(APIView):
             
             return Response({'success': True})
         return Response(serializer.errors, status=400)
+    
+
+class Paymentitem(APIView):
+    permission_classes = [IsAuthenticatedAndTokenValid]
+    
+    def post(self, request):
+        auth_header = request.headers.get('Authorization', '')
+
+        if not auth_header:
+            return Response({'message': 'Please sign in.'}, status=401)
+
+        token = auth_header.split(' ')[1]
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        user_id = payload.get('user_id')
+        data = request.data
+        user = User.objects.get(id=user_id)
+
+        payment_data = {
+            'user_id': user.id,
+            'firstname': data['firstName'],
+            'lastname': data['lastName'],
+            'address': data['address'],
+            'city': data['city'],
+            'state': data['state'],
+            'paymentmethod': data['paymentmethod']
+        }
+
+        payment_serializer = PaymentSerializer(data=payment_data)
+
+        if payment_serializer.is_valid():
+            payment = payment_serializer.save()
+        else:
+            return Response(payment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        final_items_data = data['items']
+        
+        for item_data in final_items_data:
+            item = {
+                'user_id':user.id,
+                'productid': item_data['id'],
+                'name': item_data['name'],
+                'price': item_data['price'],
+                'quantity': item_data['quantity'],
+                'total': item_data['total']
+            }
+            #print(item)
+            final_items_serializer = FinalItemSerializer(data=item)
+
+            if final_items_serializer.is_valid():
+                final_items_serializer.save()
+                cart_obj = Cart.objects.filter(user_id=user_id, many= True)
+                cart_obj.delete() 
+                
+            else:
+                payment.delete()
+                return Response(final_items_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'Data added Successfully.': True}, status=status.HTTP_200_OK)
