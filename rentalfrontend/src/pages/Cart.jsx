@@ -9,6 +9,7 @@ import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 import http from "../services/httpService";
 import config from "../config.json";
+import { NavLink } from "react-router-dom";
 
 const Cart = () => {
   const SummaryItemStyle = "SummaryItem flex justify-between mt-3 w-[100%]";
@@ -29,6 +30,10 @@ const Cart = () => {
     setTotalAmount,
     calculateTotal,
   } = useContext(CartContext);
+
+  const handleClick = () => {
+    navigate("/");
+  };
 
   const [imageUrls, setImageUrls] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -68,7 +73,7 @@ const Cart = () => {
         {/* upper buttons div */}
         <div className="flex items-center justify-between mt-4 mobile:flex-col">
           <button
-            onClick={() => navigate("/")}
+            onClick={handleClick}
             className="btn font-bold mt-0 rounded-lg p-2 hover:scale-105  bg-teal-500"
           >
             Rent More
@@ -76,6 +81,12 @@ const Cart = () => {
           <div className="flex text-xl font-bold hover:cursor-pointer mobile:m-5">
             <p>Items in your Cart: {items.length} </p>
           </div>
+          {/*           <NavLink
+            className="btn mt-0 font-bold rounded-lg p-2 hover:scale-105  bg-teal-500"
+            to="/checkout"
+          >
+            Checkout Now
+          </NavLink> */}
           <button
             onClick={() => navigate("/checkout")}
             className="btn mt-0 font-bold rounded-lg p-2 hover:scale-105  bg-teal-500"

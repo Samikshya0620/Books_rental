@@ -19,6 +19,7 @@ import { AuthContext } from "../context/authContext";
 import { toast } from "react-toastify";
 import http from "../services/httpService";
 import config from "../config.json";
+import { useNavigate } from "react-router-dom";
 
 const apiEndpoint = config.apiUrl + "final";
 
@@ -55,6 +56,7 @@ function getStepContent(step) {
 const theme = createTheme();
 
 export default function Checkout() {
+  const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const { user, authTokens } = React.useContext(AuthContext);
   const { items, getItems } = React.useContext(CartContext);
@@ -108,6 +110,8 @@ export default function Checkout() {
         );
         if (response.status === 200) {
           toast.success("Order Placed Successfully");
+          await sleep(2000);
+          navigate("/");
         }
       } catch (error) {
         toast.error("Failed to place order: ", error.message);
