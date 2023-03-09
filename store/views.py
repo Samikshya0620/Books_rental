@@ -387,12 +387,15 @@ class Paymentitem(APIView):
         print(final_items_data)
         
         for item_data in final_items_data:
+            book_id = item_data['productid']
+            book = Book.objects.get(id=book_id)
             item = {
                 'user_id':user.id,
                 'productid': item_data['productid'],
                 'name': item_data['name'],
                 'price': item_data['price'],
                 'quantity': item_data['quantity'],
+                'image_data':book.image,
                 'total': item_data['total']
             }
             print(item_data['productid'])
@@ -475,12 +478,14 @@ class ProfileAPI(APIView):
         except (jwt.DecodeError, IndexError):
             return Response({'error': 'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
         user_id = payload.get('user_id')
-        usr = FinalItem.objects.filter(user_id=user_id)
-        userprofile = User.objects.filter(id = user_id).values('username', 'email', 'firstname', 'lastname').first()
-        print(userprofile)
-        
+        usrs = FinalItem.objects.filter(user_id=user_id)
+        serialized_data =[]
+        for usr in usrs:
+            image_path = usr.image_data.path
+            with default_storage.open(image_path, 'rb') as f:
+                    image_data = f.read()
+            final_data = FinalItemSerializer(usr).data
+            final_data['image_data'] = base64.b64encode(image_data).decode('utf-8')
+            serialized_data.append(final_data)
+        return Response(serialized_data)
 
-        serializer = FinalItemSerializer(usr,many = True)
-        
-        return Response(serializer.data)
-    

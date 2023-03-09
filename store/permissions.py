@@ -38,7 +38,7 @@ class IsAuthenticatedAndTokenValid(BasePermission):
             lastname = payload['lastname']
             email = payload['email']
             user = User.objects.get(id=user_id)
-            print(username,user_id,firstname,lastname,email)
+            #print(username,user_id,firstname,lastname,email)
             return user_id
             #({'message': f'Hello, {user.username}!'}, status=200)
 

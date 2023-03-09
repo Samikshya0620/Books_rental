@@ -130,7 +130,7 @@ class Payment(models.Model):
 class FinalItem(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)   
     productid = models.IntegerField()
-    #image_data = models.ImageField(upload_to = get_file_path,null= True, blank = True)
+    image_data = models.ImageField(upload_to = get_file_path,null= True, blank = True)
     name = models.CharField(max_length=50)
     price = models.IntegerField()
     quantity = models.IntegerField()
