@@ -136,6 +136,13 @@ class FinalItem(models.Model):
     quantity = models.IntegerField()
     total = models.IntegerField()
     order_date = models.DateField(auto_now_add=True)
+    deadline_date = models.DateField(default=datetime.date.today() + datetime.timedelta(days=30))
+    remaining_days = models.IntegerField(default =0)
+
+    def save(self, *args, **kwargs):
+        self.remaining_days = (self.deadline_date - datetime.date.today()).days
+        super(FinalItem, self).save(*args, **kwargs)
+
 
     def __str__(self):
         return str(self.user_id)
