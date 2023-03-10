@@ -3,16 +3,22 @@ import { ShoppingCartOutlined } from "@mui/icons-material";
 import React, { useContext, useState } from "react";
 import { CartContext } from "../context/cartContext";
 import { toast } from "react-toastify";
+import { AuthContext } from "../context/authContext";
 
 const Product = ({ item }) => {
+  const { user } = useContext(AuthContext);
   const image = new Image();
   image.src = `data:image/jpeg;base64,${item.image}`;
   const { addItem } = useContext(CartContext);
   const [clicked, setClicked] = useState(false);
   const handleClick = () => {
     addItem(item);
-    toast.success("Added to cart Successfully");
-    setClicked(true);
+    if (user) {
+      toast.success("Added to cart Successfully");
+      setClicked(true);
+    } else {
+      toast.error("You Must Login First");
+    }
   };
   return (
     <div className="p-2 shadow-lg min-w-[15rem] bg-white rounded-md m-2">

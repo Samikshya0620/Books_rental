@@ -51,20 +51,52 @@ const Navbar = () => {
               B-Book
             </div>
           </div>
-          </div>
-          <div className="flex justify-end py-4 px-4 ">
-
-{/*           <button className="font-bold text-sm border border-solid rounded-lg border-gray">
+        </div>
+        <div className="flex justify-end py-4 px-4 ">
+          {/*           <button className="font-bold text-sm border border-solid rounded-lg border-gray">
             <Search />
           </button> */}
-          </div>
-          
-          <div className="sm:flex items-center hidden justify-end p-2 m-2 gap-4">
+        </div>
+
+        <div className="sm:flex items-center hidden justify-end p-2 m-2 gap-4">
+          <NavLink className={style} to="/home">
+            Home
+          </NavLink>
+          <NavLink className={style} to="/category">
+            Books
+          </NavLink>
+          {!user && (
+            <NavLink className={style} to="/register">
+              Register
+            </NavLink>
+          )}
+          {!user && (
+            <NavLink className={style} to="/login">
+              Sign In
+            </NavLink>
+          )}
+          {user && (
+            <button className={style} onClick={() => logoutUser()}>
+              Log Out
+            </button>
+          )}
+          <Badge badgeContent={counter} color="primary">
+            <ShoppingCartOutlined
+              className="cursor-pointer"
+              onClick={handleClick}
+            />
+          </Badge>
+          {user && <button> {user.username}</button>}
+        </div>
+        {toggle && (
+          <motion.div
+            initial={{ x: -500, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="fixed h-full w-96 top-0 left-0 z-20 bg-Teal text-white flex flex-col justify-center items-center shadow-lg gap-8 py-8"
+          >
             <NavLink className={style} to="/home">
               Home
-            </NavLink>
-            <NavLink className={style} to="/category">
-              Books
             </NavLink>
             {!user && (
               <NavLink className={style} to="/register">
@@ -81,54 +113,18 @@ const Navbar = () => {
                 Log Out
               </button>
             )}
-          <Badge badgeContent={counter} color="primary">
-            <ShoppingCartOutlined
-              className="cursor-pointer"
-              onClick={handleClick}
+            <HiX
+              className="absolute right-12 top-12 text-3xl cursor-pointer"
+              onClick={(prev) => setToggle(!prev)}
             />
-          </Badge>
-          {user && (
-              <button> {user.username}</button>
-          )}
-
-          {toggle && (
-            <motion.div
-              initial={{ x: -500, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="fixed h-full w-96 top-0 left-0 z-20 bg-Teal text-white flex flex-col justify-center items-center shadow-lg gap-8 py-8"
-            >
-              <NavLink className={style} to="/home">
-                Home
-              </NavLink>
-              {!user && (
-                <NavLink className={style} to="/register">
-                  Register
-                </NavLink>
-              )}
-              {!user && (
-                <NavLink className={style} to="/login">
-                  Sign In
-                </NavLink>
-              )}
-              {user && (
-                <button className={style} onClick={() => logoutUser()}>
-                  Log Out
-                </button>
-              )}
-              <HiX
-                className="absolute right-12 top-12 text-3xl cursor-pointer"
-                onClick={(prev) => setToggle(!prev)}
+            <Badge badgeContent={counter} color="primary">
+              <ShoppingCartOutlined
+                className="cursor-pointer"
+                onClick={handleClick}
               />
-              <Badge badgeContent={counter} color="primary">
-                <ShoppingCartOutlined
-                  className="cursor-pointer"
-                  onClick={handleClick}
-                />
-              </Badge>
-            </motion.div>
-          )}
-        </div>
+            </Badge>
+          </motion.div>
+        )}
       </div>
     </div>
   );

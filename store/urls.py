@@ -38,8 +38,7 @@ urlpatterns = [
     #path('auth',views.protected_view,name ='auth' ),
     path('cartpost',CAPI.as_view(),name ='cartpost'),
     path('final',Paymentitem.as_view(),name='final'),
-
-
+    path('profile',ProfileAPI.as_view(),name ='profile'),
 ]
 
 

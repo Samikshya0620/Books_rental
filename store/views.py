@@ -351,27 +351,54 @@ class Paymentitem(APIView):
             return Response(payment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         final_items_data = data['items']
+        print(final_items_data)
         
         for item_data in final_items_data:
+            book_id = item_data['id']
+            book = Book.objects.get(id=book_id)
             item = {
                 'user_id':user.id,
                 'productid': item_data['id'],
                 'name': item_data['name'],
                 'price': item_data['price'],
                 'quantity': item_data['quantity'],
+                'image_data':book.image,
                 'total': item_data['total']
             }
-            #print(item)
             final_items_serializer = FinalItemSerializer(data=item)
 
             if final_items_serializer.is_valid():
                 final_items_serializer.save()
-
-                
+                         
             else:
                 payment.delete()
                 return Response(final_items_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
         cart_obj = Cart.objects.filter(user_id=user_id)
         cart_obj.delete()
         return Response({'Data added Successfully.': True}, status=status.HTTP_200_OK)
+
+    
+  
+class ProfileAPI(APIView):
+    permission_classes = [IsAuthenticatedAndTokenValid]
+    def get(self, request):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return Response({'message': 'Please sign in.'}, status=401)
+
+        try:      
+            token = auth_header.split(' ')[1]
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        except (jwt.DecodeError, IndexError):
+            return Response({'error': 'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+        user_id = payload.get('user_id')
+        usrs = FinalItem.objects.filter(user_id=user_id)
+        serialized_data =[]
+        for usr in usrs:
+            image_path = usr.image_data.path
+            with default_storage.open(image_path, 'rb') as f:
+                    image_data = f.read()
+            final_data = FinalItemSerializer(usr).data
+            final_data['image_data'] = base64.b64encode(image_data).decode('utf-8')
+            serialized_data.append(final_data)
+        return Response(serialized_data)
