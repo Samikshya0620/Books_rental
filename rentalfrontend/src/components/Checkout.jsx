@@ -60,6 +60,7 @@ export default function Checkout() {
   const [loading, setLoading] = React.useState(true);
   const { user, authTokens } = React.useContext(AuthContext);
   const { items, getItems } = React.useContext(CartContext);
+
   const { firstName, lastName, address, city, state, paymentMethod } =
     React.useContext(CheckoutContext);
   const [activeStep, setActiveStep] = React.useState(0);

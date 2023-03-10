@@ -17,6 +17,9 @@ def generate_tokens(userv):
     access_payload = {
     'user_id': userv.id,
     'username': userv.username,
+    'firstname':userv.firstname,
+    'lastname':userv.lastname,
+    'email':userv.email,
     'access_token_exp': access_token_exp,
 }
 
@@ -24,6 +27,9 @@ def generate_tokens(userv):
     refresh_payload = {
     'user_id': userv.id,
     'username': userv.username,
+    'firstname':userv.firstname,
+    'lastname':userv.lastname,
+    'email':userv.email,
     'refresh_token_exp': refresh_token_exp,
 }
 

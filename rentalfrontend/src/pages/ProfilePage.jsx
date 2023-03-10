@@ -1,14 +1,41 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import { AuthContext } from "../context/authContext";
+import http from "../services/httpService";
+import config from "../config.json";
+import { toast } from "react-toastify";
+
+const apiEndpoint = config.apiUrl + "profile";
 
 const ProfilePage = () => {
+  const [imageUrls, setImageUrls] = useState([]);
+  const { user, authTokens } = useContext(AuthContext);
+  const [rentedItems, setRentedItems] = useState([]);
   const userPhoto = "https://via.placeholder.com/150";
-  const userName = "John Doe";
-  const rentedItems = [
-    { id: 1, name: "Item 1", rentedOn: "01/01/2022" },
-    { id: 2, name: "Item 2", rentedOn: "02/02/2022" },
-    { id: 3, name: "Item 3", rentedOn: "03/03/2022" },
-  ];
+  useEffect(() => {
+    const getRentedItems = async () => {
+      try {
+        const response = await http.get(apiEndpoint, {
+          headers: {
+            Authorization: "Bearer " + authTokens.access_token,
+          },
+        });
+        setRentedItems(await response.data);
+      } catch (error) {
+        toast.error("Khai k bigryo bigryo");
+      }
+    };
+    getRentedItems();
+  }, [authTokens.access_token]);
+  useEffect(() => {
+    const urls = rentedItems.map((item) => {
+      const image = new Image();
+      image.src = `data:image/jpeg;base64,${item.image_data}`;
+      return image.src;
+    });
+
+    setImageUrls(urls);
+  }, [rentedItems]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -20,17 +47,71 @@ const ProfilePage = () => {
             src={userPhoto}
             alt="User's profile photo"
           />
-          <h1 className="text-3xl font-bold mt-4">{userName}</h1>
+          <h1 className="text-3xl font-bold mt-4">{user.firstname +" "+ user.lastname}</h1>
+          <h1 className="text-xl  mt-4">{user.email}</h1>
+          
         </div>
         <div className="py-8">
+          <div className="flex justify-center items-center">
+
           <h2 className="text-xl font-bold mb-4">Rented Items:</h2>
-          <ul className="list-disc pl-8">
-            {rentedItems.map((item) => (
-              <li key={item.id}>
-                {item.name} - Rented on {item.rentedOn}
-              </li>
-            ))}
-          </ul>
+          </div>
+          <div className="overflow-x-auto overflow-y-auto">
+            <table className="table-auto w-full">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 text-xs sm:text-xl"></th>
+                  <th className="px-4 py-2 text-xs sm:text-xl">Product Name</th>
+                  <th className="px-4 py-2 text-xs sm:text-xl">Order Date</th>
+                  <th className="px-4 py-2 text-xs sm:text-xl">Quantity</th>
+                  <th className="px-4 py-2 text-xs sm:text-xl">Price</th>
+                  <th className="px-4 py-2 text-xs sm:text-xl">Total</th>
+                  <th className="px-4 py-2 text-xs sm:text-xl">
+                    Remaining Days
+                  </th>
+                  <th className="px-4 py-2 text-xs sm:text-xl">
+                    Deadline Date
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {rentedItems.map((item, index) => (
+                  <tr key={item.id}>
+                    <td className=" px-4 py-2 text-xs sm:text-sm">
+                      <img
+                        className="p-1 m-auto"
+                        src={imageUrls[index]}
+                        alt={item.name}
+                        width="50"
+                        height="50"
+                      />
+                    </td>
+                    <td className=" px-4 py-2 text-xs sm:text-xl font-bold">
+                      {item.name}
+                    </td>
+                    <td className=" px-4 py-2 text-xs sm:text-xl">
+                      {item.order_date}
+                    </td>
+                    <td className=" px-4 py-2 text-xs sm:text-xl">
+                      {item.quantity}
+                    </td>
+                    <td className=" px-4 py-2 text-xs sm:text-xl">
+                      Rs {item.price}
+                    </td>
+                    <td className=" px-4 py-2 text-xs sm:text-xl">
+                      Rs {item.total}
+                    </td>
+                    <td className=" px-4 py-2 text-xs sm:text-xl">
+                      {item.remaining_days}
+                    </td>
+                    <td className=" px-4 py-2 text-xs sm:text-xl">
+                      {item.deadline_date}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
