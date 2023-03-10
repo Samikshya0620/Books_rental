@@ -111,7 +111,6 @@ const ProductPage = () => {
                   <button
                     onClick={() => {
                       addItem(selectedProduct);
-                      toast.success("Added to cart Successfully");
                     }}
                     className="text-white bg-[#8a4af3] rounded-full shadow-md mt-[30px] ml-[30px] p-3"
                   >

@@ -1,15 +1,7 @@
 from django.shortcuts import render,redirect
 from django.core.exceptions import ObjectDoesNotExist
 import jwt
-from django.contrib import messages
-from django.contrib.auth import get_user_model
-from django.utils.http import urlsafe_base64_encode
-from django.shortcuts import get_object_or_404
-from django.utils.http import urlsafe_base64_decode
-from django.core.mail import send_mail
 from rest_framework.exceptions import NotFound
-from django.contrib.auth.views import PasswordResetConfirmView
-from rest_framework.renderers import JSONRenderer
 import base64
 from django.core.files.storage import default_storage
 from django.conf import settings
@@ -33,7 +25,6 @@ from django.contrib.auth.hashers import check_password
 import io
 from rest_framework.generics import GenericAPIView
 from .serializers import *
-from django.contrib.auth.tokens import default_token_generator
 from django.views.decorators.csrf import csrf_exempt
 import json
 from rest_framework.views import APIView
@@ -101,6 +92,24 @@ def login_view(request):
             response = JsonResponse({'access_token': access_token, 'refresh_token': refresh_token}, status=status.HTTP_200_OK)
             return response
             
+            """
+            access_token_exp = datetime.datetime.now() + datetime.timedelta(minutes=1)
+            refresh_token_exp = datetime.datetime.now() + datetime.timedelta(days=7)
+
+            payload = {
+                
+                'user_id': userv.id,
+                'username': userv.username,
+                'access_token_exp': access_token_exp,
+                'refresh_token_exp': refresh_token_exp,
+            }
+            access_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256',json_encoder=CustomJSONEncoder)
+            refresh_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256',json_encoder=CustomJSONEncoder)
+
+            # Return tokens to the client
+            response = JsonResponse({'access_token': access_token, 'refresh_token': refresh_token}, status=status.HTTP_200_OK)
+            return response
+        """
        else:
             return JsonResponse({'message': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
    else:
@@ -236,8 +245,7 @@ class CartAPI(APIView):
     def get(self, request):
         auth_header = request.headers.get('Authorization')
         if not auth_header:
-            return Response({'message': 'Please sign in.'}, status=401)
-
+            return Response({'error': 'Not Authorized'}, status=status.HTTP_401_UNAUTHORIZED)
         try:      
             token = auth_header.split(' ')[1]
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
@@ -288,12 +296,7 @@ class CartAPI(APIView):
 class CAPI(APIView):
     permission_classes = [IsAuthenticatedAndTokenValid]
     def post(self, request):
-        auth_header = request.headers.get('Authorization', '')
-
-        if not auth_header:
-            return Response({'message': 'Please sign in.'}, status=401)
-
-        
+        auth_header = request.headers.get('Authorization')
         token = auth_header.split(' ')[1]
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
         user_id = payload.get('user_id')
@@ -313,44 +316,8 @@ class CAPI(APIView):
             
             return Response({'success': True})
         return Response(serializer.errors, status=400)
-
     
 
-class Payment(APIView):
-    permission_classes = [IsAuthenticatedAndTokenValid]
-    def post(self, request):
-        auth_header = request.headers.get('Authorization', '')
-
-        if not auth_header:
-            return Response({'message': 'Please sign in.'}, status=401)
-
-        
-        token = auth_header.split(' ')[1]
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        user_id = payload.get('user_id')
-        
-        
-        serializer = PaymentSerializer(data=request.data)
-        itemserializer= FinalItemSerializer(idata = request.data.items)
-        print(itemserializer)
-        
-        if serializer.is_valid():
-            user_id = serializer.validated_data['user_id']
-            firstname = serializer.validated_data['firstname']
-            lastname = serializer.validated_data['lastname']
-            address = serializer.validated_data['address']
-            city = serializer.validated_data['city']
-            state = serializer.validated_data['state']
-            paymentmethod = serializer.validated_data['paymentmethod']
-        
-            print(firstname,lastname,address,city,state,paymentmethod)
-            serializer.save()
-            return Response({'Data added Successfully.': True}, status=status.HTTP_200_OK)
-        # else:
-        #     return Response({'Error': 'Data could not be saved in payment'}, status=status.HTTP_400_BAD_REQUEST)
-         
- 
-            
 class Paymentitem(APIView):
     permission_classes = [IsAuthenticatedAndTokenValid]
     
@@ -368,8 +335,8 @@ class Paymentitem(APIView):
 
         payment_data = {
             'user_id': user.id,
-            'firstname': data['firstname'],
-            'lastname': data['lastname'],
+            'firstname': data['firstName'],
+            'lastname': data['lastName'],
             'address': data['address'],
             'city': data['city'],
             'state': data['state'],
@@ -387,18 +354,17 @@ class Paymentitem(APIView):
         print(final_items_data)
         
         for item_data in final_items_data:
-            book_id = item_data['productid']
+            book_id = item_data['id']
             book = Book.objects.get(id=book_id)
             item = {
                 'user_id':user.id,
-                'productid': item_data['productid'],
+                'productid': item_data['id'],
                 'name': item_data['name'],
                 'price': item_data['price'],
                 'quantity': item_data['quantity'],
                 'image_data':book.image,
                 'total': item_data['total']
             }
-            print(item_data['productid'])
             final_items_serializer = FinalItemSerializer(data=item)
 
             if final_items_serializer.is_valid():
@@ -413,58 +379,6 @@ class Paymentitem(APIView):
 
     
   
-class PassAPI(APIView):
-    def post(self,request):
-        data = request.data  
-        email = data.get('email')
-        print(email)
-        try:
-            user = User.objects.get(email=email)
-            #print(user.email)
-        except :
-            return Response({'Error': 'User doesnot exist'}, status=status.HTTP_400_BAD_REQUEST)
-            # If the user doesn't exist, don't give away that fact to potential attackers
-            
-        else:
-            if user:
-                uidb64 = urlsafe_base64_encode(str(user.pk).encode())
-                token = user.generate_reset_token()
-                reset_url = request.build_absolute_uri(f'/reset_password/?uidb64={uidb64}&token={token}')
-                message = f'Click the following link to reset your password:\n\n{reset_url}'
-                send_mail('Reset your password', message, 'from@example.com', [email])
-                return Response({'Success': True}, status=status.HTTP_200_OK)
-        
-        return Response({'Error':'Invalid Request.'}, status=status.HTTP_400_BAD_REQUEST)
-    
-
-class PasswordResetView(APIView):
-    @csrf_exempt
-    def post(self, request):
-        data = request.data
-
-        uidb64 = data.get('uidb64')
-        token = data.get('token')
-        password = data.get('password')
-        password_confirmation = data.get('password_confirmation')
-
-        try:
-            uid = urlsafe_base64_decode(uidb64).decode()
-            user = User.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            return Response({'error': 'Invalid reset link'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if not default_token_generator.check_token(user, token):
-            return Response({'error': 'Invalid reset link'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if password != password_confirmation:
-            return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
-
-        user.reset_password(password)
-
-        return Response({'success': 'Password reset successful'}, status=status.HTTP_200_OK)
-
-
-
 class ProfileAPI(APIView):
     permission_classes = [IsAuthenticatedAndTokenValid]
     def get(self, request):
@@ -488,4 +402,3 @@ class ProfileAPI(APIView):
             final_data['image_data'] = base64.b64encode(image_data).decode('utf-8')
             serialized_data.append(final_data)
         return Response(serialized_data)
-

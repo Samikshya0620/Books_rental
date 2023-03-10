@@ -2,7 +2,7 @@ import React from "react";
 import { ApiCategories } from "../Api/CategoryApi";
 import { useContext } from "react";
 import { productsContext } from "../context/productsContext";
-import { motion } from "framer-motion"; 
+import { motion } from "framer-motion";
 
 import Category from "./Category";
 const Categories = () => {
@@ -27,12 +27,12 @@ const Categories = () => {
         <div className="sm:text-3xl text-2xl font-bold mt-5 mb-5">
           Our Top <span className="text-Teal">Categories</span>
         </div>
-        <p className="text-sm text-gray leading-7 max-w-[700px] mx-auto">
+        {/*         <p className="text-sm text-gray leading-7 max-w-[700px] mx-auto">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore
           tempora illo laborum ex cupiditate tenetur doloribus non velit atque
           amet repudiandae ipsa modi numquam quas odit optio, totam voluptate
           sit! Lorem ipsum dolor sit amet.
-        </p>
+        </p> */}
       </div>
       <motion.div
         variants={container}

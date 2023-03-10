@@ -1,10 +1,6 @@
 from django.db import models
 import datetime
 import os
-from django.core.mail import send_mail
-from django.urls import reverse
-from django.conf import settings
-import secrets
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.apps import apps
 from django.contrib.auth.hashers import make_password
@@ -66,10 +62,6 @@ class User(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?977?\d{10}$', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
     phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True,null = True)
     email =  models.EmailField(unique=True)
-    is_verified = models.BooleanField(default=False)
-    reset_token = models.CharField(max_length=64, unique=True, blank=True, null=True)
-
-
     REQUIRED_FIELDS = ()
     USERNAME_FIELD = 'username'
 
@@ -85,23 +77,7 @@ class User(models.Model):
         super().save(*args, **kwargs)
         # self.password = make_password(self.password)
         #super().save(*args, **kwargs)
-
-
-    def generate_reset_token(self):
-        # Generate a random token
-        token = secrets.token_hex(32)
-        # Store the token on the user instance
-        self.reset_token = token
-        self.save()
-        return token
-
-    def reset_password(self, new_password):
-        # Set the new password and clear the reset token
-        self.password = make_password(new_password)
-        self.reset_token = None
-        self.save()  
-
-    
+      
     
 
 class Cart(models.Model):
@@ -111,7 +87,16 @@ class Cart(models.Model):
     
     def __str__(self):
         return str(self.user_id)
-                
+    
+
+"""
+class Booking_item(models.Model):
+    cart_id = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    
+
+    def __str__(self):
+        return self.__class__.__name__
+"""
 
 class Payment(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -146,7 +131,12 @@ class FinalItem(models.Model):
 
     def __str__(self):
         return str(self.user_id)
-    
+
+
+
+
+
+
     
    
 

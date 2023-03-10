@@ -33,12 +33,7 @@ class IsAuthenticatedAndTokenValid(BasePermission):
 
         # Access token is valid, continue with the request
             user_id = payload['user_id']
-            username = payload['username']
-            firstname = payload['firstname']
-            lastname = payload['lastname']
-            email = payload['email']
             user = User.objects.get(id=user_id)
-            #print(username,user_id,firstname,lastname,email)
             return user_id
             #({'message': f'Hello, {user.username}!'}, status=200)
 

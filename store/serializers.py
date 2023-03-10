@@ -49,3 +49,8 @@ class FinalItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinalItem
         fields = '__all__'
+       
+
+
+
+

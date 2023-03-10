@@ -42,11 +42,6 @@ export const CartProvider = (props) => {
   };
 
   const handleAddItem = async (item) => {
-    if (!authTokens) {
-      toast.error("You must login first ");
-      await sleep(2000);
-      navigate("/login");
-    }
     try {
       const response = await http.post(
         config.apiUrl + "cartpost",
@@ -60,7 +55,9 @@ export const CartProvider = (props) => {
       setTotalCounter(totalCounter + 1);
       getitems();
     } catch (error) {
-      console.log(error);
+      toast.error("You must login first ");
+      await sleep(2000);
+      navigate("/login");
     }
   };
 
