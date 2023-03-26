@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }) => {
       navigate("/login");
     } catch (error) {
       toast.error(error.response.data.error);
+      console.log(error);
     }
   };
 

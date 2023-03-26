@@ -3,21 +3,31 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
+
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { AuthContext } from "../context/authContext";
-import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import config from "../config.json";
+import { useNavigate } from "react-router-dom";
+import http from "../services/httpService";
+
+const apiEndpoint = config.apiUrl + "bookowner";
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.primary" align="center" {...props}>
-      {"Copyright © BookRental"}
+      {"Copyright Â© BookRental"}
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -26,11 +36,47 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignUp() {
-  const data = useContext(AuthContext);
+export default function Rent() {
+  const { authTokens } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    let firstname = data.get("firstName");
+    let lastname = data.get("lastName");
+    let email = data.get("email");
+    let address = data.get("address");
+    let contactnumber = data.get("phone");
+    let bookname = data.get("book");
+    try {
+      let response = await http.post(
+        apiEndpoint,
+        {
+          firstname: firstname,
+          lastname: lastname,
+          email: email,
+          address: address,
+          contactnumber: contactnumber,
+          bookname: bookname,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + authTokens.access_token,
+          },
+        }
+      );
+      toast.success("Thank you,We will contact you soon");
+      await sleep(2000);
+      navigate("/home");
+    } catch (error) {
+      toast.error(error.response.data.error);
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
-      <Navbar/>
+      <Navbar />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -42,12 +88,12 @@ export default function SignUp() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+            <MenuBookIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Rent it
           </Typography>
-          <Box component="form" sx={{ mt: 3 }} onSubmit={data.registerUser}>
+          <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -74,16 +120,6 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="username"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
                   id="email"
                   label="Email Address"
                   name="email"
@@ -94,13 +130,33 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
+                  id="book"
+                  label="Book Name"
+                  name="book"
+                  autoComplete="Name of book"
                 />
-                 <ToastContainer></ToastContainer>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="address"
+                  label="Address"
+                  name="address"
+                  autoComplete="your address"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="phone"
+                  label="Contact num"
+                  name="phone"
+                  type="tel"
+                  inputProps={{ pattern: "[0-9]{10}" }}
+                  autoComplete="contact number"
+                />
               </Grid>
             </Grid>
             <Button
@@ -109,15 +165,8 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Submit
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="/login" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
