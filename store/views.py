@@ -403,6 +403,7 @@ class ProfileAPI(APIView):
             final_data = FinalItemSerializer(usr).data
             final_data['image_data'] = base64.b64encode(image_data).decode('utf-8')
             serialized_data.append(final_data)
+
         return Response(serialized_data)
     
 
@@ -436,3 +437,4 @@ class OwnerAPI(APIView):
             res ={'msg':'Data has been created successfully'}
             return Response(res)
         return Response({'msg':serializer.errors})
+

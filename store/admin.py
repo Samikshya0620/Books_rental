@@ -9,4 +9,6 @@ admin.site.register(Book_Inventory)
 admin.site.register(Cart)
 admin.site.register(Payment)
 admin.site.register(FinalItem)
+
 admin.site.register(Owner)
+

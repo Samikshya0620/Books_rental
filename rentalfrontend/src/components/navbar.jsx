@@ -52,6 +52,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
+
         <div className="flex justify-end items-center p-2 m-2 gap-4 hover:scale-105">
           {/* <NavLink
             className={style + " bg-[#a9fdd8] p-2 rounded-full"}
@@ -91,10 +92,12 @@ const Navbar = () => {
               className={style + " bg-[#a9fdd8] p-2 rounded-md"}
               to="/register"
             >
+
               Register
             </NavLink>
           )}
           {!user && (
+
             <NavLink
               className={style + " bg-[#a9fdd8] p-2 rounded-md"}
               to="/login"
@@ -107,6 +110,7 @@ const Navbar = () => {
               className={style + " bg-[#a9fdd8] p-2 rounded-md"}
               onClick={() => logoutUser()}
             >
+
               Log Out
             </button>
           )}
@@ -116,12 +120,14 @@ const Navbar = () => {
               onClick={handleClick}
             />
           </Badge>
+
           {user && (
             <NavLink className="cursor-pointer" to="/user">
               {" "}
               {user.username}
             </NavLink>
           )}
+
         </div>
         {toggle && (
           <motion.div
@@ -130,9 +136,11 @@ const Navbar = () => {
             transition={{ duration: 0.3 }}
             className="fixed h-full w-96 top-0 left-0 z-20 bg-Teal text-white flex flex-col justify-center items-center shadow-lg gap-8 py-8"
           >
+
             <NavLink className={style} to="/rent">
               Rent It
             </NavLink>
+
             <NavLink className={style} to="/home">
               Home
             </NavLink>

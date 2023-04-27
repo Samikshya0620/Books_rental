@@ -4,11 +4,13 @@ import { AuthContext } from "../context/authContext";
 import http from "../services/httpService";
 import config from "../config.json";
 import { toast } from "react-toastify";
+
 import hero from "../assets/face.jpg";
 import { useNavigate } from "react-router-dom";
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
 
 const apiEndpoint = config.apiUrl + "profile";
 
@@ -16,8 +18,10 @@ const ProfilePage = () => {
   const [imageUrls, setImageUrls] = useState([]);
   const { user, authTokens } = useContext(AuthContext);
   const [rentedItems, setRentedItems] = useState([]);
+
   const navigate = useNavigate();
   const userPhoto = hero;
+
   useEffect(() => {
     const getRentedItems = async () => {
       try {
@@ -28,7 +32,9 @@ const ProfilePage = () => {
         });
         setRentedItems(await response.data);
       } catch (error) {
+
         toast.error("Something Went Wrong");
+
       }
     };
     getRentedItems();
@@ -50,6 +56,7 @@ const ProfilePage = () => {
         <div className="flex flex-col items-center py-12">
           <img
             className="h-32 w-32 rounded-full object-cover"
+
             src={hero}
             alt="User's profile photo"
           />
@@ -61,6 +68,7 @@ const ProfilePage = () => {
         <div className="py-8">
           <div className="flex justify-center items-center">
             <h2 className="text-xl font-bold mb-4">Rented Items:</h2>
+
           </div>
           <div className="overflow-x-auto overflow-y-auto">
             <table className="table-auto w-full">
@@ -73,10 +81,12 @@ const ProfilePage = () => {
                   <th className="px-4 py-2 text-xs sm:text-xl">Price</th>
                   <th className="px-4 py-2 text-xs sm:text-xl">Total</th>
                   <th className="px-4 py-2 text-xs sm:text-xl">
+
                     Deadline Date
                   </th>
                   <th className="px-4 py-2 text-xs sm:text-xl">
                     Remaining Days
+
                   </th>
                 </tr>
               </thead>
@@ -108,11 +118,13 @@ const ProfilePage = () => {
                       Rs {item.total}
                     </td>
                     <td className=" px-4 py-2 text-xs sm:text-xl">
+
                       {item.deadline_date}
                     </td>
                     <td className=" px-4 py-2 text-xs sm:text-xl ">
                       {item.remaining_days}
                     </td>
+
                   </tr>
                 ))}
               </tbody>

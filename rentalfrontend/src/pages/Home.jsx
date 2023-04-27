@@ -41,6 +41,7 @@ const Home = () => {
       localStorage.removeItem("message");
     }
   }, [secondloading]);
+
   return (
     <div>
       <Navbar />

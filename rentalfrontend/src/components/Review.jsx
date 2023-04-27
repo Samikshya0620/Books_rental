@@ -3,16 +3,19 @@ import { CartContext } from "../context/cartContext";
 import { CheckoutContext } from "../context/CheckoutContext";
 
 const Review = () => {
+
   const { items, totalAmount, setTotalAmount, calculateTotal } =
     useContext(CartContext);
   const { address, paymentMethod, state } = useContext(CheckoutContext);
   const [loading, setLoading] = useState(true);
   const [imageUrls, setImageUrls] = useState([]);
 
+
   useEffect(() => {
     const total = calculateTotal(items);
     setTotalAmount(total);
     setLoading(false);
+
     const urls = items.map((item) => {
       const image = new Image();
       image.src = `data:image/jpeg;base64,${item.image_data}`;
@@ -22,9 +25,11 @@ const Review = () => {
     setImageUrls(urls);
   }, [loading, items]);
 
+
   return (
     <div className="bg-white p-4 rounded-md shadow-sm">
       <div className="flex justify-between">
+
         <h3 className="text-lg font-medium mb-4">Order summary</h3>
         <div className="flex justify-between">
           <h1>Quantity</h1>
@@ -56,6 +61,8 @@ const Review = () => {
           <span className="text-gray-700 font-medium">{totalAmount}</span>
         </div>
       </div>
+
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
           <h4 className="text-lg font-medium mb-2">Shipping</h4>

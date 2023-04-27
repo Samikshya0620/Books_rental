@@ -27,7 +27,9 @@ urlpatterns = [
     path('cartpost',CAPI.as_view(),name ='cartpost'),
     path('final',Paymentitem.as_view(),name='final'),
     path('profile',ProfileAPI.as_view(),name ='profile'),
+
     path('bookowner',OwnerAPI.as_view(),name ='bookowner'),
+
 ]
 
 
