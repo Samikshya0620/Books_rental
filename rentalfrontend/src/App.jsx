@@ -15,6 +15,10 @@ import { AuthProvider } from "./context/authContext";
 import { PrivateRoute } from "./services/privateRoute";
 import CheckoutPage from "./pages/Checkoutpage";
 import ProfilePage from "./pages/ProfilePage";
+
+import Verification from "./pages/VerificationPage";
+import Rent from "./pages/ApplyRent";
+
 const Layout = () => {
   return <Outlet />;
 };
@@ -32,11 +36,15 @@ function App() {
               <Route path="login" element={<Login />} />
               <Route path="cart" element={<PrivateRoute Component={Cart} />} />
               <Route path="category" element={<CategoryPage />} />
-              <Route path="user" element={<ProfilePage/>}/> 
+
+              <Route path="user" element={<ProfilePage />} />
+
               <Route
                 path="checkout"
                 element={<PrivateRoute Component={CheckoutPage} />}
               />
+              <Route path="rent" element={<PrivateRoute Component={Rent} />} />
+              <Route path="/verify-email/:token" element={<Verification />} />
               <Route path="*" element={<Navigate to={"/"} replace />} />
             </Route>
           </Routes>

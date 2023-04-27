@@ -7,15 +7,15 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields='__all__' 
 
-        def update(self,instance,validated_data):
-            instance.id = validated_data.get('id',instance.id)
-            instance.username = validated_data.get("username",instance.username)
-            instance.firstname = validated_data.get("username",instance.firstname)
-            instance.namename = validated_data.get("username",instance.middlename)
-            instance.lastname = validated_data.get("username",instance.lastname)
-            instance.email = validated_data.get("username",instance.email)
-            instance.save()
-            return instance
+    def update(self,instance,validated_data):
+        instance.id = validated_data.get('id',instance.id)
+        instance.username = validated_data.get("username",instance.username)
+        instance.firstname = validated_data.get("username",instance.firstname)
+        instance.namename = validated_data.get("username",instance.middlename)
+        instance.lastname = validated_data.get("username",instance.lastname)
+        instance.email = validated_data.get("username",instance.email)
+        instance.save()
+        return instance
 
 
 
@@ -51,6 +51,11 @@ class FinalItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
        
 
+    
+class OwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Owner
+        fields = '__all__'
 
 
 

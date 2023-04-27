@@ -4,7 +4,11 @@ import os
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.apps import apps
 from django.contrib.auth.hashers import make_password
-
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils import  timezone
+from django.core.mail import send_mail
+from django.contrib.auth.tokens import default_token_generator  
+import secrets
 from django.core.validators import RegexValidator
 # Create your models here.
 
@@ -62,24 +66,44 @@ class User(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?977?\d{10}$', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
     phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True,null = True)
     email =  models.EmailField(unique=True)
+    email_verified = models.BooleanField(default=False)
+    email_verification_token = models.CharField(max_length=128, blank=True)
     REQUIRED_FIELDS = ()
     USERNAME_FIELD = 'username'
 
     def __str__(self):
         return self.username
-    """
-    def hash_password(self, password: str):
-        self.password = make_password(password=password)
-    """
+    
     def save(self, *args, **kwargs):
         if not self.id:
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
-        # self.password = make_password(self.password)
-        #super().save(*args, **kwargs)
-      
-    
 
+
+class User(models.Model):
+    username = models.CharField(max_length=100, blank = False, null = False,unique= True)
+    password = models.CharField(max_length=512)
+    firstname = models.CharField(max_length=100, blank = False, null = False)
+    middlename = models.CharField(max_length=100, blank = True, null = True)
+    lastname = models.CharField(max_length=100, blank = False, null = False)
+    phone_regex = RegexValidator(regex=r'^\+?977?\d{10}$', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
+    phonenumber = models.CharField(validators=[phone_regex], max_length=14, blank=True,null = True)
+    email =  models.EmailField(unique=True)
+    email_verified = models.BooleanField(default=False)
+    email_verification_token = models.CharField(max_length=128, blank=True)
+    REQUIRED_FIELDS = ()
+    USERNAME_FIELD = 'username'
+
+    def __str__(self):
+        return self.username
+    
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+
+        
 class Cart(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     book_id = models.ForeignKey(Book,on_delete= models.CASCADE)
@@ -88,15 +112,6 @@ class Cart(models.Model):
     def __str__(self):
         return str(self.user_id)
     
-
-"""
-class Booking_item(models.Model):
-    cart_id = models.ForeignKey(Cart,on_delete=models.CASCADE)
-    
-
-    def __str__(self):
-        return self.__class__.__name__
-"""
 
 class Payment(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -110,12 +125,22 @@ class Payment(models.Model):
     def __str__(self):
         return str(self.user_id)
 
+class Payment(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    firstname = models.CharField(max_length= 50)
+    lastname = models.CharField(max_length=50)
+    address = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
+    paymentmethod = models.CharField(max_length=50)
 
+    def __str__(self):
+        return str(self.user_id)
 
 class FinalItem(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)   
     productid = models.IntegerField()
-    image_data = models.ImageField(upload_to = get_file_path,null= True, blank = True) 
+    image_data = models.ImageField(upload_to = get_file_path,null= True, blank = True)
     name = models.CharField(max_length=50)
     price = models.IntegerField()
     quantity = models.IntegerField()
@@ -134,6 +159,18 @@ class FinalItem(models.Model):
 
 
 
+class Owner(models.Model):
+    firstname = models.CharField(max_length=100, blank = False, null = False)
+    lastname = models.CharField(max_length=100, blank = False, null = False)
+    email =  models.EmailField(unique=True)
+    contactnumber = models.CharField( max_length=14, blank=False,null = False)
+    address = models.CharField(max_length=100, blank = False, null = False)
+    bookname = models.CharField(max_length=100, blank = False, null = False)
+
+    def __str__(self):
+        return self.firstname
+
+    
 
 
 

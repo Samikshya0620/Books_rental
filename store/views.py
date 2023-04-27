@@ -3,6 +3,8 @@ from django.core.exceptions import ObjectDoesNotExist
 import jwt
 from rest_framework.exceptions import NotFound
 import base64
+import random
+from django.contrib import messages
 from django.core.files.storage import default_storage
 from django.conf import settings
 from rest_framework.decorators import api_view
@@ -10,6 +12,7 @@ from rest_framework_simplejwt.tokens import AccessToken,RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
+from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAuthenticatedAndTokenValid
 from rest_framework import serializers
@@ -30,6 +33,17 @@ import json
 from rest_framework.views import APIView
 from rest_framework.mixins import ListModelMixin,RetrieveModelMixin,CreateModelMixin
 from .tokens import *
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.core.mail import send_mail
+from django.conf import settings
+import secrets
+from django.contrib.auth.hashers import make_password
+from .serializers import *
+from .serializers import UserSerializer
+from .models import User
+
 
 # Create your views here.
 def home(request):
@@ -74,18 +88,6 @@ def login_view(request):
        #usr = User.objects.filter(username = user)  
        
        userv = User.objects.filter(username = user).first()
-
-       #serializer = UserSerializer(usr,many = True)
-       #json_data = JSONRenderer().render(serializer.data)
-        #print(type(json_data))
-       #print(json_data)
-       #u_dict = json.loads(json_data.decode('utf-8'))
-       #a = u_dict[0]
-       #dbuser=a.get("username")
-       #dbpass = a.get("password")
-       #did = a.get("id")
-       #print(dbuser,dbpass)
-       #print(type(dbpass))
        if ((userv.username == user) and check_password(passw,userv.password)):
 
             access_token ,refresh_token =generate_tokens(userv) 
@@ -182,40 +184,49 @@ def categoryapi(request):
             res ={'msg':'Data has been created successfully'}
             return Response(res)
         return Response({'msg':serializer.errors})
-    
-    
+
 class UserAPI(APIView):
-    def get(self,request):
-        usr = User.objects.all()
-        serializer = UserSerializer(usr,many = True)
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
-    def post(self,request):
+    def post(self, request):
         data = request.data
-        usrname = data.get('username')
-        eml = data.get('email')
-        if User.objects.filter(username=usrname).exists():
+        username = data.get('username')
+        email = data.get('email')
+
+        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
             error_msg = {'error': 'User with this username already exists.'}
-            if User.objects.filter(email=eml).exists():
-                error_msg = {'error': 'User with this email or username already exists.'}
-                return JsonResponse(error_msg, status=400)
-            return JsonResponse(error_msg, status=400)            
-        serializer = UserSerializer(data = data)
-               
+            return Response(error_msg, status=404)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            res ={'msg':'Data has been created successfully'}
-            return Response(res)
-        return Response({'msg':serializer.errors})
-    
-    def delete(self,request):
-        usr = request.data
-        id = usr.get('id')
-        usr = User.objects.get(id=id)
-        usr.delete
-        res ={'msg':'Data has been deleted successfully'}
-        return Response(res)
-    
+            user = serializer.save()
+
+            # Send email verification to the user
+            token = secrets.token_hex(20)
+            user.email_verification_token = token
+            user.save()
+            
+            subject = 'Verify your email address'
+            message = f'Hi {user.username},\n\nPlease click the following link to verify your email address:\n\nhttp://localhost:3000/verify-email/{token}/\n\nThanks,\nB-BOOK'
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [user.email]
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        user_id = request.data.get('id')
+        try:
+            user = User.objects.get(id=user_id)
+            user.delete()
+            return Response({'msg': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 class UserList(GenericAPIView,ListModelMixin):
     queryset = User.objects.all()
@@ -230,15 +241,6 @@ class UserRetrieve(GenericAPIView,RetrieveModelMixin):
 
     def get(self ,request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
-
-
-class UserCreate(GenericAPIView,CreateModelMixin):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def post(self ,request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
 
 class CartAPI(APIView):
     permission_classes = [IsAuthenticatedAndTokenValid]
@@ -401,4 +403,38 @@ class ProfileAPI(APIView):
             final_data = FinalItemSerializer(usr).data
             final_data['image_data'] = base64.b64encode(image_data).decode('utf-8')
             serialized_data.append(final_data)
+
         return Response(serialized_data)
+    
+
+@api_view(['GET'])
+def verify_email(request, token):
+        print(token)
+    # Find the user with the given verification token
+        user = User.objects.get(email_verification_token=token)
+        if user is not None:
+        # If verification succeeds, update the email_verified field and save the user object
+            print(f'Before update: email_verified={user.email_verified}')
+            user.email_verified = True
+            # user.email_verification_token =''
+            user.save()
+            print(f'After update: email_verified={user.email_verified}')
+
+            # Redirect to the React frontend homepage
+            return Response({'message': 'Verified.'}, status=200)
+        else:
+            # If verification fails, return an error page
+            return Response({'message': 'Please sign in.'}, status=401)
+        
+
+class OwnerAPI(APIView):
+    permission_classes = [IsAuthenticatedAndTokenValid]
+    def post(self, request):   
+        data = request.data
+        serializer = OwnerSerializer(data = data)
+        if serializer.is_valid():
+            serializer.save()
+            res ={'msg':'Data has been created successfully'}
+            return Response(res)
+        return Response({'msg':serializer.errors})
+

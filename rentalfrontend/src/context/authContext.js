@@ -5,9 +5,8 @@ import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
 
 const apiEndpoint = config.apiUrl + "signin";
 
@@ -49,6 +48,7 @@ export const AuthProvider = ({ children }) => {
       navigate("/login");
     } catch (error) {
       toast.error(error.response.data.error);
+      console.log(error);
     }
   };
 
@@ -66,10 +66,8 @@ export const AuthProvider = ({ children }) => {
       toast.success("User Logged in successfully");
       await sleep(2000);
       navigate("/");
-      
     } catch (error) {
       toast.error("Username and password do not match");
-      
     }
     /* console.log(jwt); */
   };
@@ -77,6 +75,7 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
+    navigate("/");
   };
   let contextData = {
     user: user,

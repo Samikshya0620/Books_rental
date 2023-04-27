@@ -14,6 +14,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { AuthContext } from "../context/authContext";
 import { ToastContainer } from "react-toastify";
+import Navbar from "../components/Navbar";
 
 function Copyright(props) {
   return (
@@ -32,6 +33,8 @@ export default function LoginPage() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Navbar />
+
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
